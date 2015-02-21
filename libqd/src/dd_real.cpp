@@ -17,6 +17,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <algorithm>
 
 #include "config.h"
 #include <qd/dd_real.h>
@@ -875,7 +876,7 @@ dd_real &dd_real::operator=(const char *s) {
 ostream &operator<<(ostream &os, const dd_real &dd) {
   bool showpos = (os.flags() & ios_base::showpos) != 0;
   bool uppercase =  (os.flags() & ios_base::uppercase) != 0;
-  return os << dd.to_string(os.precision(), os.width(), os.flags(), 
+  return os << dd.to_string((int)os.precision(), (int)os.width(), os.flags(), 
       showpos, uppercase, os.fill());
 }
 
@@ -985,7 +986,7 @@ void dd_real::to_digits(char *s, int &expn, int precision) const {
 void dd_real::write(char *s, int len, int precision, 
     bool showpos, bool uppercase) const {
   string str = to_string(precision, 0, ios_base::scientific, showpos, uppercase);
-  std::strncpy(s, str.c_str(), len-1);
+  strncpy_s(s, str.length(), str.c_str(), len - 1);
   s[len-1] = 0;
 }
 
@@ -1112,7 +1113,7 @@ string dd_real::to_string(int precision, int width, ios_base::fmtflags fmt,
           s += t[0];
           if (precision > 0) s += '.';
 
-          for (i = 1; i <= precision; i++)
+          for (i = 1; (i<=precision) & (i<d+1); i++)
             s += t[i];
 
         }
@@ -1130,12 +1131,9 @@ string dd_real::to_string(int precision, int width, ios_base::fmtflags fmt,
     	// if this ratio is large, then we've got problems
     	if( fabs( from_string / this->x[0] ) > 3.0 ){
 
-    		int point_position;
-    		char temp;
-
     		// loop on the string, find the point, move it up one
     		// don't act on the first character
-    		for(i=1; i < s.length(); i++){
+    		for(i=1; (unsigned int)i < s.length(); i++){
     			if(s[i] == '.'){
     				s[i] = s[i-1] ;
     				s[i-1] = '.' ;
@@ -1160,7 +1158,7 @@ string dd_real::to_string(int precision, int width, ios_base::fmtflags fmt,
   }
 
   /* Fill in the blanks */
-  int len = s.length();
+  int len = (int)s.length();
   if (len < width) {
     int delta = width - len;
     if (fmt & ios_base::internal) {
@@ -1219,7 +1217,7 @@ int dd_real::read(const char *s, dd_real &a) {
 
       case 'E':
       case 'e':
-        nread = std::sscanf(p+1, "%d", &e);
+	nread = sscanf_s(p + 1, "%d", &e);
         done = true;
         if (nread != 1)
           return -1;
