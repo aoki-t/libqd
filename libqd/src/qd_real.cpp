@@ -622,6 +622,88 @@ void qd_real::dump_bits(const string &name, std::ostream &os) const {
   }
 }
 
+char qd_bits[QD_DUMP_SIZE];
+void qd_real::dump_bits2(const string &name, std::ostream &os) const {
+	string::size_type len = name.length();
+	if (len > 0) {
+		os << name << " = ";
+		len += 3;
+	}
+
+	memset(qd_bits, ' ', sizeof(qd_bits) / sizeof(qd_bits[0]));
+	qd_bits[QD_DUMP_SIZE - 1] = '\0';
+	int idx = 0;
+	int mss = (x[0]<0.0 ? 1 : 0);	// most significant sign 0:+ 1:-
+
+	for (int j = 0; j < 4; j++) {
+		double x2 = x[j];
+		int sgn = (x2 < 0.0 ? 1 : 0);
+		int same_s = (mss == sgn ? 1 : 0);
+
+		std::streamsize old_prec = os.precision(19);
+		std::ios_base::fmtflags old_flags = os.flags();
+		os << std::scientific;
+
+		//os << setw(27) << x << ' ';
+		if (QD_ISNAN(x2) || QD_ISINF(x2) || (x2 == 0.0)) {
+			//os << "                                                           ";
+			idx += 53;
+		} else {
+
+			x2 = std::abs(x2);
+			int expn = get_double_expn(x2);
+			idx = (-1 * expn);
+			double d = std::ldexp(1.0, expn);
+			//os << setw(5) << expn << " ";
+			for (int i = 0; i < 53; i++) {
+				if (x2 >= d) {
+					x2 -= d;
+					//os << (same_s ? '1' : '0');
+					qd_bits[idx] = (same_s ? '1' : '0');
+				} else
+					//os << (same_s ? '0' : '1');
+					qd_bits[idx] = (same_s ? '0' : '1');
+				d *= 0.5;
+				idx++;
+			}
+			
+			if (!same_s) {
+				// twos complementize
+				for (int k = 1; k < 54; k++) {
+					if (qd_bits[idx - k] == '0') {
+						qd_bits[idx - k] = '1';
+						//sub 1 from following digits
+
+						for (int m = 1; m < k; m++) {
+							if ((idx - k + m) >= idx) { break; }
+
+							if (qd_bits[idx - k + m] == '1') {
+								qd_bits[idx - k + m] = '0';
+							}
+							else {
+								cerr << "should not occur! " << endl;
+								//qd_bits[idx - k + m] == '1';
+							}
+						}
+						break;
+					}
+				}
+			}
+
+			if (x2 != 0.0) {
+				// should not happen
+				os << " +trailing stuff";
+			}
+		}
+		
+		os.precision(old_prec);
+		os.flags(old_flags);
+
+	}
+	os << qd_bits;
+	os << endl;
+}
+
 void qd_real::dump(const string &name, std::ostream &os) const {
   std::ios_base::fmtflags old_flags = os.flags();
   std::streamsize old_prec = os.precision(19);
