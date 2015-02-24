@@ -1,6 +1,9 @@
 /* config.h.  Generated from config.h.in by configure.  */
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+#ifndef _QD_CONFIG_H
+#define _QD_CONFIG_H  1
+
 /* Define to dummy `main' function (if any) required to link to the Fortran
    libraries. */
 /* #undef FC_DUMMY_MAIN */
@@ -168,5 +171,8 @@
 #define VERSION "2.3.15"
 
 /* Whether to use x86 fpu fix. */
+#if defined(_M_IX86) && _M_IX86_FP == 0	// use /arch:ia32
 #define X86 1
+#endif
 
+#endif	//_QD_CONFIG_H
