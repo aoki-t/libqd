@@ -117,9 +117,8 @@ dd_real nroot(const dd_real &a, int n) {
 
   /* Perform Newton's iteration. */
   x += x * (1.0 - r * npwr(x, n)) / static_cast<double>(n);
-  if (a.x[0] < 0.0){
-	x = -x;
-  }
+  if (a.x[0] < 0.0)
+    x = -x;
   return 1.0/x;
 }
 
@@ -170,21 +169,21 @@ dd_real pow(const dd_real &a, const dd_real &b) {
 
 static const int n_inv_fact = 15;
 static const double inv_fact[n_inv_fact][2] = {
-	{ 1.66666666666666657e-01,  9.25185853854297066e-18 }, // 1/3!
-	{ 4.16666666666666644e-02,  2.31296463463574266e-18 }, // 1/4!
-	{ 8.33333333333333322e-03,  1.15648231731787138e-19 }, // 1/5!
-	{ 1.38888888888888894e-03, -5.30054395437357706e-20 }, // 1/6!
-	{ 1.98412698412698413e-04,  1.72095582934207053e-22 }, // 1/7!
-	{ 2.48015873015873016e-05,  2.15119478667758816e-23 }, // 1/8!
-	{ 2.75573192239858925e-06, -1.85839327404647208e-22 }, // 1/9!
-	{ 2.75573192239858883e-07,  2.37677146222502973e-23 }, // 1/10!
-	{ 2.50521083854417202e-08, -1.44881407093591197e-24 }, // 1/11!
-	{ 2.08767569878681002e-09, -1.20734505911325997e-25 }, // 1/12!
-	{ 1.60590438368216133e-10,  1.25852945887520981e-26 }, // 1/13!
-	{ 1.14707455977297245e-11,  2.06555127528307454e-28 }, // 1/14!
-	{ 7.64716373181981641e-13,  7.03872877733453001e-30 }, // 1/15!
-	{ 4.77947733238738525e-14,  4.39920548583408126e-31 }, // 1/16!
-	{ 2.81145725434552060e-15,  1.65088427308614326e-31 }  // 1/17!
+  { 1.66666666666666657e-01,  9.25185853854297066e-18},
+  { 4.16666666666666644e-02,  2.31296463463574266e-18},
+  { 8.33333333333333322e-03,  1.15648231731787138e-19},
+  { 1.38888888888888894e-03, -5.30054395437357706e-20},
+  { 1.98412698412698413e-04,  1.72095582934207053e-22},
+  { 2.48015873015873016e-05,  2.15119478667758816e-23},
+  { 2.75573192239858925e-06, -1.85839327404647208e-22},
+  { 2.75573192239858883e-07,  2.37677146222502973e-23},
+  { 2.50521083854417202e-08, -1.44881407093591197e-24},
+  { 2.08767569878681002e-09, -1.20734505911325997e-25},
+  { 1.60590438368216133e-10,  1.25852945887520981e-26},
+  { 1.14707455977297245e-11,  2.06555127528307454e-28},
+  { 7.64716373181981641e-13,  7.03872877733453001e-30},
+  { 4.77947733238738525e-14,  4.39920548583408126e-31},
+  { 2.81145725434552060e-15,  1.65088427308614326e-31}
 };
 
 /* Exponential.  Computes exp(x) in double-double precision. */
@@ -201,7 +200,7 @@ dd_real exp(const dd_real &a) {
   const double k = 512.0;
   const double inv_k = 1.0 / k;
 
-  if (a.x[0] <= -709.0)	// logE(2^1023)
+  if (a.x[0] <= -709.0)
     return 0.0;
 
   if (a.x[0] >=  709.0)
@@ -283,21 +282,22 @@ dd_real log10(const dd_real &a) {
   return log(a) / dd_real::_log10;
 }
 
-static const dd_real _pi16 = dd_real(1.963495408493620697e-01, 7.654042494670957545e-18);
+static const dd_real _pi16 = dd_real(1.963495408493620697e-01,
+                                     7.654042494670957545e-18);
 
 /* Table of sin(k * pi/16) and cos(k * pi/16). */
 static const double sin_table [4][2] = {
-	{1.950903220161282758e-01, -7.991079068461731263e-18},
-	{3.826834323650897818e-01, -1.005077269646158761e-17},
-	{5.555702330196021776e-01,  4.709410940561676821e-17},
-	{7.071067811865475727e-01, -4.833646656726456726e-17}
+  {1.950903220161282758e-01, -7.991079068461731263e-18},
+  {3.826834323650897818e-01, -1.005077269646158761e-17},
+  {5.555702330196021776e-01,  4.709410940561676821e-17},
+  {7.071067811865475727e-01, -4.833646656726456726e-17}
 };
 
 static const double cos_table [4][2] = {
-	{9.807852804032304306e-01,  1.854693999782500573e-17},
-	{9.238795325112867385e-01,  1.764504708433667706e-17},
-	{8.314696123025452357e-01,  1.407385698472802389e-18},
-	{7.071067811865475727e-01, -4.833646656726456726e-17}
+  {9.807852804032304306e-01, 1.854693999782500573e-17},
+  {9.238795325112867385e-01, 1.764504708433667706e-17},
+  {8.314696123025452357e-01, 1.407385698472802389e-18},
+  {7.071067811865475727e-01, -4.833646656726456726e-17}
 };
 
 /* Computes sin(a) using Taylor series.
@@ -991,7 +991,7 @@ void dd_real::write(char *s, int len, int precision,
 }
 
 
-void round_string_dd(char *s, int precision, int *offset){
+void round_string(char *s, int precision, int *offset){
 	/*
 	 Input string must be all digits or errors will occur.
 	 */
@@ -1096,7 +1096,7 @@ string dd_real::to_string(int precision, int width, ios_base::fmtflags fmt,
         if (fixed) {
           // fix the string if it's been computed incorrectly
           // round here in the decimal string if required
-          round_string_dd(t, d + 1 , &off);
+          round_string(t, d + 1 , &off);
 
           if (off > 0) {
             for (i = 0; i < off; i++) s += t[i];
@@ -1217,7 +1217,7 @@ int dd_real::read(const char *s, dd_real &a) {
 
       case 'E':
       case 'e':
-		nread = sscanf_s(p + 1, "%d", &e);
+	nread = sscanf_s(p + 1, "%d", &e);
         done = true;
         if (nread != 1)
           return -1;
@@ -1270,87 +1270,6 @@ void dd_real::dump_bits(const string &name, std::ostream &os) const {
   print_double_info(os, x[1]);
   os << " ]" << endl;
 }
-
-char dd_bits[DD_DUMP_SIZE];
-void dd_real::dump_bits2(const string &name, std::ostream &os) const {
-	string::size_type len = name.length();
-	if (len > 0) {
-		os << name << " = ";
-		len += 3;
-	}
-
-	memset(dd_bits, ' ', sizeof(dd_bits) / sizeof(dd_bits[0]));
-	dd_bits[DD_DUMP_SIZE - 1] = '\0';
-	int idx = 0;
-	int mss = (x[0]<0.0 ? 1 : 0);	// most significant sign 0:+ 1:-
-
-	for (int j = 0; j < 2; j++) {
-		double x2 = x[j];
-		int sgn = (x2 < 0.0 ? 1 : 0);
-		int same_s = (mss == sgn ? 1 : 0);
-
-		std::streamsize old_prec = os.precision(19);
-		std::ios_base::fmtflags old_flags = os.flags();
-		os << std::scientific;
-
-		//os << setw(27) << x << ' ';
-		if (QD_ISNAN(x2) || QD_ISINF(x2) || (x2 == 0.0)) {
-			//os << "                                                           ";
-			idx += 53;
-		} else {
-
-			x2 = std::abs(x2);
-			int expn = get_double_expn(x2);
-			idx = (-1 * expn);
-			double d = std::ldexp(1.0, expn);
-			//os << setw(5) << expn << " ";
-			for (int i = 0; i < 53; i++) {
-				if (x2 >= d) {
-					x2 -= d;
-					//os << (same_s ? '1' : '0');
-					dd_bits[idx] = (same_s ? '1' : '0');
-				} else
-					//os << (same_s ? '0' : '1');
-					dd_bits[idx] = (same_s ? '0' : '1');
-				d *= 0.5;
-				idx++;
-			}
-			if (!same_s) {
-				// twos complementize
-				for (int k = 1; k < 54; k++) {
-					if (dd_bits[idx - k] == '0') {
-						dd_bits[idx - k] = '1';
-						//sub 1 from following digits
-
-						for (int m = 1; m < k; m++) {
-							if ((idx - k + m) >= idx) { break; }
-
-							if (dd_bits[idx - k + m] == '1') {
-								dd_bits[idx - k + m] = '0';
-							}
-							else {
-								cerr << "should not occur! " << endl;
-								//dd_bits[idx - k + m] == '1';
-							}
-						}
-						break;
-					}
-				}
-			}
-
-			if (x2 != 0.0) {
-				// should not happen
-				os << " +trailing stuff";
-			}
-		}
-		os.precision(old_prec);
-		os.flags(old_flags);
-
-	}
-	os << dd_bits;
-	os << endl;
-}
-
 
 dd_real dd_real::debug_rand() { 
 

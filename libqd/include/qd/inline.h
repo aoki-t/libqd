@@ -16,7 +16,7 @@
 #define _QD_INLINE_H
 
 #define _QD_SPLITTER 134217729.0               // = 2^27 + 1
-#define _QD_SPLIT_THRESH 6.69692879491417e+299 // = 2^996 (2^(1023-27))
+#define _QD_SPLIT_THRESH 6.69692879491417e+299 // = 2^996
 
 #ifdef QD_VACPP_BUILTINS_H
 /* For VisualAge C++ __fmadd */

@@ -131,8 +131,6 @@ struct QD_API qd_real {
   void dump(const std::string &name = "", std::ostream &os = std::cerr) const;
   void dump_bits(const std::string &name = "", 
                  std::ostream &os = std::cerr) const;
-  void dump_bits2(const std::string &name = "",
-                  std::ostream &os = std::cerr) const;
 
   static qd_real debug_rand();
 
@@ -287,10 +285,6 @@ QD_API qd_real fmod(const qd_real &a, const qd_real &b);
 
 QD_API std::ostream &operator<<(std::ostream &s, const qd_real &a);
 QD_API std::istream &operator>>(std::istream &s, qd_real &a);
-
-#define QD_DUMP_SIZE  280
-extern char qd_bits[QD_DUMP_SIZE];
-
 #ifdef QD_INLINE
 #include <qd/qd_inline.h>
 #endif
