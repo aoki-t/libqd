@@ -54,6 +54,7 @@ public:
   bool test6();
   bool test7();
   bool test8();
+  bool test9();
   bool testall();
 };
 
@@ -426,6 +427,37 @@ bool TestSuite<T>::test8() {
 }
 
 template <class T>
+bool TestSuite<T>::test9() {
+	cout << endl;
+	cout << "Test 9.  (nroot correctly check)." << endl;
+	cout.precision(T::_ndigits);
+
+	cout.precision(dd_real::_ndigits);
+	dd_real dd_expected(-2.0);
+	cout << "dd_real::nroot(-8.0, 3) =" << nroot(dd_real(-8.0), 3) << endl;
+
+	cout << "dd_real::nroot( 4.0,-2) =" << nroot(dd_real(4.0), -2) << endl;
+	cout << "dd_real::nroot(-4.0, 2) =" << nroot(dd_real(-4.0), 2) << endl;
+	cout << "dd_real::nroot( 4.0, 1) =" << nroot(dd_real(4.0), 1) << endl;
+	cout << "dd_real::nroot( 4.0, 2) =" << nroot(dd_real(4.0), 2) << endl;
+	cout << "dd_real::nroot( 0.0, 3) =" << nroot(dd_real(0.0), 3) << endl;
+	cout << endl;
+
+	cout.precision(qd_real::_ndigits);
+	qd_real qd_expected(-2.0);
+	cout << "qd_real::nroot(-8.0, 3) =" << nroot(qd_real(-8.0), 3) << endl;
+
+	cout << "qd_real::nroot( 4.0,-2) =" << nroot(qd_real(4.0), -2) << endl;
+	cout << "qd_real::nroot(-4.0, 2) =" << nroot(qd_real(-4.0), 2) << endl;
+	cout << "qd_real::nroot( 4.0, 1) =" << nroot(qd_real(4.0), 1) << endl;
+	cout << "qd_real::nroot( 4.0, 2) =" << nroot(qd_real(4.0), 2) << endl;
+	cout << "qd_real::nroot( 0.0, 3) =" << nroot(qd_real(0.0), 3) << endl;
+
+	return (dd_expected == nroot(dd_real(-8.0), 3)
+			&& qd_expected == nroot(qd_real(-8.0), 3));
+}
+
+template <class T>
 bool TestSuite<T>::testall() {
   bool pass = true;
   pass &= print_result(test1());
@@ -436,6 +468,7 @@ bool TestSuite<T>::testall() {
   pass &= print_result(test6());
   pass &= print_result(test7());
   pass &= print_result(test8());
+  pass &= print_result(test9());
   return pass;
 }
 
