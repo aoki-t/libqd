@@ -219,17 +219,13 @@ dd_real exp(const dd_real &a) {
 
   p = sqr(r);
   s = r + mul_pwr2(p, 0.5);
-  p *= r;
-  t = p * dd_real(inv_fact[0][0], inv_fact[0][1]);
   int i = 0;
   do {
-    s += t;
     p *= r;
-    ++i;
     t = p * dd_real(inv_fact[i][0], inv_fact[i][1]);
+    s += t;
+    ++i;
   } while (std::abs(to_double(t)) > inv_k * dd_real::_eps && i < 5);
-
-  s += t;
 
   s = mul_pwr2(s, 2.0) + sqr(s);
   s = mul_pwr2(s, 2.0) + sqr(s);
@@ -413,10 +409,12 @@ dd_real sin(const dd_real &a) {
     }
   }
 
-  dd_real u(cos_table[abs_k-1][0], cos_table[abs_k-1][1]);
-  dd_real v(sin_table[abs_k-1][0], sin_table[abs_k-1][1]);
   dd_real sin_t, cos_t;
   sincos_taylor(t, sin_t, cos_t);
+
+  dd_real u(cos_table[abs_k-1][0], cos_table[abs_k-1][1]);
+  dd_real v(sin_table[abs_k-1][0], sin_table[abs_k-1][1]);
+
   if (j == 0) {
     if (k > 0) {
       r = u * sin_t + v * cos_t;
@@ -491,6 +489,7 @@ dd_real cos(const dd_real &a) {
 
   dd_real sin_t, cos_t;
   sincos_taylor(t, sin_t, cos_t);
+
   dd_real u(cos_table[abs_k-1][0], cos_table[abs_k-1][1]);
   dd_real v(sin_table[abs_k-1][0], sin_table[abs_k-1][1]);
 
