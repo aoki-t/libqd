@@ -738,9 +738,16 @@ dd_real tanh(const dd_real &a) {
     return 0.0;
   }
 
-  dd_real ea = exp(a);
-  dd_real inv_ea = inv(ea);
-  return (ea - inv_ea) / (ea + inv_ea);
+  if (std::abs(to_double(a)) > 0.05) {
+	  dd_real ea = exp(a);
+	  dd_real inv_ea = inv(ea);
+	  return (ea - inv_ea) / (ea + inv_ea);
+  } else {
+	  dd_real s, c;
+	  s = sinh(a);
+	  c = sqrt(1.0 + sqr(s));
+	  return s / c;
+  }
 }
 
 void sincosh(const dd_real &a, dd_real &sinh_a, dd_real &cosh_a) {

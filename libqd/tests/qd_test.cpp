@@ -55,6 +55,7 @@ public:
   bool test7();
   bool test8();
   bool test9();
+  bool test10();
   bool testall();
 };
 
@@ -453,9 +454,46 @@ bool TestSuite<T>::test9() {
 	cout << "qd_real::nroot( 4.0, 2) =" << nroot(qd_real(4.0), 2) << endl;
 	cout << "qd_real::nroot( 0.0, 3) =" << nroot(qd_real(0.0), 3) << endl;
 
+	//dd_expected.dump_bits("dd_expected:", cout);
+	//(nroot(dd_real(-8.0), 3)).dump_bits("dd_computed:", cout);
+	//qd_expected.dump_bits("qd_expected:", cout);
+	//(nroot(qd_real(-8.0), 3)).dump_bits("qd_computed:", cout);
+
 	return (dd_expected == nroot(dd_real(-8.0), 3)
 			&& qd_expected == nroot(qd_real(-8.0), 3));
 }
+
+template <class T>
+bool TestSuite<T>::test10() {
+	cout << endl;
+	cout << "Test 10.  (sinh, tanh correctly check)." << endl;
+
+	cout.precision(dd_real::_ndigits);
+	
+	dd_real x(10);
+	qd_real qd_x(10);
+	dd_real base(0.5);
+	qd_real qd_base(0.5);
+	dd_real dd_tanhx, dd_tanhx2;
+	qd_real qd_tanhx, qd_tanhx2;
+	bool displayed = false;
+	while (base > dd_real::_min_normalized){
+				
+		dd_tanhx = tanh(base);
+		qd_tanhx = tanh(qd_base);
+
+		cout << "base     : " << base << (base == dd_tanhx2 ? " ***" : "") << endl;
+		cout << "tanhx    : " << dd_tanhx <<  endl;
+		cout << "qd_tanhx : " << qd_tanhx << endl;
+		cout << endl;
+
+		base = base / x;
+		qd_base = base;
+	} 
+
+	return (false);
+}
+
 
 template <class T>
 bool TestSuite<T>::testall() {
@@ -469,6 +507,7 @@ bool TestSuite<T>::testall() {
   pass &= print_result(test7());
   pass &= print_result(test8());
   pass &= print_result(test9());
+  pass &= print_result(test10());
   return pass;
 }
 
