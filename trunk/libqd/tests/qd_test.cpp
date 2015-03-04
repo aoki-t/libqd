@@ -56,6 +56,7 @@ public:
   bool test8();
   bool test9();
   bool test10();
+  bool test11();
   bool testall();
 };
 
@@ -494,6 +495,59 @@ bool TestSuite<T>::test10() {
 	return (false);
 }
 
+template <class T>
+bool TestSuite<T>::test11() {
+	cout << endl;
+	cout << "Test 11.  (sincosh correctly check)." << endl;
+
+	cout.precision(dd_real::_ndigits);
+
+	dd_real x(10);
+	qd_real qd_x(10);
+	dd_real base(0.5);
+	qd_real qd_base(0.5);
+	dd_real dd_coshx, dd_sinhx, t1,t2,t3,t4;
+	qd_real qd_coshx, qd_sinhx;
+	dd_real coshx2, sinhx2, sinhx3;
+	dd_real ONE(1.0);
+	bool displayed = false;
+	bool flag = false;
+	while (base > dd_real::_min_normalized){
+
+		coshx2 = cosh(base);
+		sinhx2 = sqrt(coshx2*coshx2 - 1.0);
+		sinhx3 = sinh(base);
+		sincosh(base, dd_sinhx, dd_coshx);
+		sincosh(qd_base, qd_sinhx, qd_coshx);
+		t1 = (dd_coshx*dd_coshx - dd_sinhx*dd_sinhx);
+		t2 = (sqr(dd_coshx) - sqr(dd_sinhx));
+		t3 = (coshx2*coshx2 - sinhx2*sinhx2);
+		t4 = (coshx2*coshx2 - sinhx3*sinhx3);
+
+		if (t1 == ONE || t2 == ONE) flag = true;
+
+		cout << "base                      :" << base  << (flag?" ***":"")<< endl;
+		cout << "sinhx                     :" << dd_sinhx << endl;
+		cout << "sinhx2 sqrt(coshx2^2 -1.0):" << sinhx2 << " diff:" << (sinhx2 - dd_sinhx) << endl;
+		cout << "sinhx(qd)                 :" << qd_sinhx << endl;
+		cout << "coshx sqrt(sinhx^2 + 1.0) :" << dd_coshx << endl;
+		cout << "coshx2                    :" << coshx2 << " diff:" << (coshx2 - dd_coshx) << endl;
+		cout << "coshx(qd)                 :" << qd_coshx << endl;
+
+		cout << "(cosh^2)-(sinh^2)         :" << t1 << " diff:" << (t1 - ONE) << endl;
+		cout << "sqr(cosh)-sqr(sinh)       :" << t2 << " diff:" << (t2 - ONE) << endl;
+		cout << "sqr(cosh2)-sqr(sinh2)     :" << t3 << " diff:" << (t3 - ONE) << endl;
+		cout << "sqr(cosh2)-sqr(sinh3)     :" << t4 << " diff:" << (t4 - ONE) << endl;
+		cout << "sqr(cosh)-sqr(sinh)(qd)   :" << (sqr(qd_coshx) - sqr(qd_sinhx)) << endl;
+		cout << endl;
+
+		base = base / x;
+		qd_base = base;
+	}
+
+	return (false);
+}
+
 
 template <class T>
 bool TestSuite<T>::testall() {
@@ -508,6 +562,7 @@ bool TestSuite<T>::testall() {
   pass &= print_result(test8());
   pass &= print_result(test9());
   pass &= print_result(test10());
+  pass &= print_result(test11());
   return pass;
 }
 
@@ -568,15 +623,15 @@ int main(int argc, char *argv[]) {
     pass &= dd_test.testall();
   }
 
-  if (flag_test_qd) {
-    TestSuite<qd_real> qd_test;
+  //if (flag_test_qd) {
+  //  TestSuite<qd_real> qd_test;
 
-    cout << endl;
-    cout << "Testing qd_real ..." << endl;
-    if (flag_verbose)
-      cout << "sizeof(qd_real) = " << sizeof(qd_real) << endl;
-    pass &= qd_test.testall();
-  }
+  //  cout << endl;
+  //  cout << "Testing qd_real ..." << endl;
+  //  if (flag_verbose)
+  //    cout << "sizeof(qd_real) = " << sizeof(qd_real) << endl;
+  //  pass &= qd_test.testall();
+  //}
   
   fpu_fix_end(&old_cw);
   return (pass ? 0 : 1);
