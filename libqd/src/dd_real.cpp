@@ -751,8 +751,15 @@ dd_real tanh(const dd_real &a) {
 }
 
 void sincosh(const dd_real &a, dd_real &sinh_a, dd_real &cosh_a) {
-  sinh_a = sinh(a);
-  cosh_a = cosh(a);
+  if (std::abs(to_double(a)) <= 0.05) {
+	  sinh_a = sinh(a);
+	  cosh_a = sqrt(1.0 + sqr(sinh_a));
+  } else {
+	  dd_real ea = exp(a);
+	  dd_real inv_ea = inv(ea);
+	  sinh_a = mul_pwr2(ea - inv_ea, 0.5);
+	  cosh_a = mul_pwr2(ea + inv_ea, 0.5);
+  }
 }
 
 dd_real asinh(const dd_real &a) {
