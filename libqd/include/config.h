@@ -90,7 +90,7 @@
 #define PACKAGE "qd"
 
 /* Define to the address where bug reports for this package should be sent. */
-#define PACKAGE_BUGREPORT "yozo@cs.berkeley.edu"
+#define PACKAGE_BUGREPORT ""
 
 /* Define to the full name of this package. */
 #define PACKAGE_NAME "qd"
@@ -121,10 +121,16 @@
 
 /* If fused multiply-add is available, define correct macro for using it. */
 /* #undef QD_FMA */
+#ifdef __AVX2__
+#define QD_FMA(a, b, c) fma(&a, &b, &c)
+#endif
 
-/* If fused multiply-subtract is available, define correct macro for using it.
-   */
+/* If fused multiply-subtract is available, define correct macro for using it.  */
 /* #undef QD_FMS */
+#ifdef __AVX2__
+#define QD_FMS(a, b, c) fms(&a, &b, &c)
+#endif
+
 
 /* Define to 1 if your compiler have the C++ standard include files. */
 #define QD_HAVE_STD 1
