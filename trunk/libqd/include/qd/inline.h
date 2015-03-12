@@ -68,9 +68,6 @@ inline double fma(double *a, double *b, double *c){
 	__m128d y = _mm_load_sd((const double*)b);
 	__m128d z = _mm_load_sd((const double*)c);
 	__m128d d = _mm_fmadd_sd(x, y, z);
-	_mm_store_sd(a, x);
-	_mm_store_sd(b, y);
-	_mm_store_sd(c, z);
 	_mm_store_sd(&r, d);
 	return r;
 }
@@ -81,9 +78,6 @@ inline double fms(double *a, double *b, double *c){
 	__m128d y = _mm_load_sd((const double*)b);
 	__m128d z = _mm_load_sd((const double*)c);
 	__m128d d = _mm_fmsub_sd(x, y, z);
-	_mm_store_sd(a, x);
-	_mm_store_sd(b, y);
-	_mm_store_sd(c, z);
 	_mm_store_sd(&r, d);
 	return r;
 }
