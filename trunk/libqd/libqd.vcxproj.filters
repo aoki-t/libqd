@@ -77,7 +77,13 @@
     <ClInclude Include="include\qd\qd_config.h">
       <Filter>ヘッダー ファイル\qd</Filter>
     </ClInclude>
-    <ClInclude Include="include\config.h">
+    <ClInclude Include="include\qd\inline4.h">
+      <Filter>ヘッダー ファイル\qd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\config.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
