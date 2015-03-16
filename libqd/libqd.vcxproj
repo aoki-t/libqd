@@ -165,8 +165,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(SolutionDir)$(ProjectName)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <EnableEnhancedInstructionSet>
-      </EnableEnhancedInstructionSet>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
@@ -189,7 +188,6 @@
     <ClCompile Include="src\util.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\config.h" />
     <ClInclude Include="include\qd\bits.h" />
     <ClInclude Include="include\qd\c_dd.h" />
     <ClInclude Include="include\qd\c_qd.h" />
@@ -197,9 +195,12 @@
     <ClInclude Include="include\qd\dd_real.h" />
     <ClInclude Include="include\qd\fpu.h" />
     <ClInclude Include="include\qd\inline.h" />
+    <ClInclude Include="include\qd\inline4.h" />
     <ClInclude Include="include\qd\qd_config.h" />
     <ClInclude Include="include\qd\qd_inline.h" />
     <ClInclude Include="include\qd\qd_real.h" />
+    <ClInclude Include="src\config.h" />
+    <ClInclude Include="src\util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
