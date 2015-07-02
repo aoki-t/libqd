@@ -57,6 +57,7 @@ public:
   bool test9();
   bool test10();
   bool test11();
+  bool test12();
   bool testall();
 };
 
@@ -447,8 +448,10 @@ bool TestSuite<T>::test9() {
 
 	cout.precision(qd_real::_ndigits);
 	qd_real qd_expected(-2.0);
+	// should be return -2, but acutally rise nan
 	cout << "qd_real::nroot(-8.0, 3) =" << nroot(qd_real(-8.0), 3) << endl;
 
+	// should be rise nan, but return 0.5
 	cout << "qd_real::nroot( 4.0,-2) =" << nroot(qd_real(4.0), -2) << endl;
 	cout << "qd_real::nroot(-4.0, 2) =" << nroot(qd_real(-4.0), 2) << endl;
 	cout << "qd_real::nroot( 4.0, 1) =" << nroot(qd_real(4.0), 1) << endl;
@@ -467,32 +470,39 @@ bool TestSuite<T>::test9() {
 template <class T>
 bool TestSuite<T>::test10() {
 	cout << endl;
-	cout << "Test 10.  (sinh, tanh correctly check)." << endl;
+	cout << "Test 10.  ( tanh correctly check)." << endl;
+	cout << "comparing dd_real::tanh(rad) to qd_real::tanh(rad) in case of rad<=0.05." << endl;
 
 	cout.precision(dd_real::_ndigits);
-	
-	dd_real x(10);
-	qd_real qd_x(10);
-	dd_real base(0.5);
+	bool flag = true;
+	dd_real dd_ten(10);
+	qd_real qd_ten(10);
+	dd_real dd_base(0.5);
 	qd_real qd_base(0.5);
 	dd_real dd_tanhx, dd_tanhx2;
 	qd_real qd_tanhx, qd_tanhx2;
-	bool displayed = false;
-	while (base > dd_real::_min_normalized){
+	
+	qd_base = dd_base;
+	while (dd_base > dd_real::_min_normalized){
 				
-		dd_tanhx = tanh(base);
+		dd_tanhx = tanh(dd_base);
 		qd_tanhx = tanh(qd_base);
-
-		cout << "base     : " << base << (base == dd_tanhx2 ? " ***" : "") << endl;
-		cout << "tanhx    : " << dd_tanhx <<  endl;
+		
+		cout << "base     : " << dd_base << (dd_base == dd_tanhx ? " ***" : "") << endl;
+		cout << "dd_tanhx : " << dd_tanhx << endl;
 		cout << "qd_tanhx : " << qd_tanhx << endl;
 		cout << endl;
 
-		base = base / x;
-		qd_base = base;
+		if (qd_tanhx - dd_tanhx > dd_tanhx * dd_real::_eps){
+			flag = false;
+		}
+
+		dd_base = dd_base / dd_ten;
+		qd_base = dd_base;
+
 	} 
 
-	return (false);
+	return (flag);
 }
 
 template <class T>
@@ -501,51 +511,116 @@ bool TestSuite<T>::test11() {
 	cout << "Test 11.  (sincosh correctly check)." << endl;
 
 	cout.precision(dd_real::_ndigits);
-
-	dd_real x(10);
-	qd_real qd_x(10);
-	dd_real base(0.5);
+	bool flag = true;
+	dd_real dd_ten(10);
+	qd_real qd_ten(10);
+	dd_real dd_base(0.5);
 	qd_real qd_base(0.5);
 	dd_real dd_coshx, dd_sinhx, t1,t2,t3,t4;
 	qd_real qd_coshx, qd_sinhx;
-	dd_real coshx2, sinhx2, sinhx3;
+	dd_real dd_coshx2, dd_sinhx2, dd_coshx3, dd_sinhx3;
 	dd_real ONE(1.0);
-	bool displayed = false;
-	bool flag = false;
-	while (base > dd_real::_min_normalized){
 
-		coshx2 = cosh(base);
-		sinhx2 = sqrt(coshx2*coshx2 - 1.0);
-		sinhx3 = sinh(base);
-		sincosh(base, dd_sinhx, dd_coshx);
+	qd_base = dd_base;
+	while (dd_base > dd_real::_min_normalized){
+
+		sincosh(dd_base, dd_sinhx, dd_coshx);
 		sincosh(qd_base, qd_sinhx, qd_coshx);
-		t1 = (dd_coshx*dd_coshx - dd_sinhx*dd_sinhx);
-		t2 = (sqr(dd_coshx) - sqr(dd_sinhx));
-		t3 = (coshx2*coshx2 - sinhx2*sinhx2);
-		t4 = (coshx2*coshx2 - sinhx3*sinhx3);
 
-		if (t1 == ONE || t2 == ONE) flag = true;
+		dd_coshx2 = cosh(dd_base);		// caluculate indivisually
+		dd_sinhx2 = sinh(dd_base);		// caluculate indivisually
 
-		cout << "base                      :" << base  << (flag?" ***":"")<< endl;
-		cout << "sinhx                     :" << dd_sinhx << endl;
-		cout << "sinhx2 sqrt(coshx2^2 -1.0):" << sinhx2 << " diff:" << (sinhx2 - dd_sinhx) << endl;
-		cout << "sinhx(qd)                 :" << qd_sinhx << endl;
-		cout << "coshx sqrt(sinhx^2 + 1.0) :" << dd_coshx << endl;
-		cout << "coshx2                    :" << coshx2 << " diff:" << (coshx2 - dd_coshx) << endl;
-		cout << "coshx(qd)                 :" << qd_coshx << endl;
+		dd_coshx3 = sqrt(ONE + dd_sinhx2*dd_sinhx2);		// using formula
+		
 
-		cout << "(cosh^2)-(sinh^2)         :" << t1 << " diff:" << (t1 - ONE) << endl;
-		cout << "sqr(cosh)-sqr(sinh)       :" << t2 << " diff:" << (t2 - ONE) << endl;
-		cout << "sqr(cosh2)-sqr(sinh2)     :" << t3 << " diff:" << (t3 - ONE) << endl;
-		cout << "sqr(cosh2)-sqr(sinh3)     :" << t4 << " diff:" << (t4 - ONE) << endl;
-		cout << "sqr(cosh)-sqr(sinh)(qd)   :" << (sqr(qd_coshx) - sqr(qd_sinhx)) << endl;
+		// for  "cosh^2 - sinh^2 = 1"
+		t1 = (dd_coshx*dd_coshx - dd_sinhx*dd_sinhx);		// by present sincosh implement
+		//t2 = (sqr(dd_coshx) - sqr(dd_sinhx));
+		t3 = (dd_coshx2*dd_coshx2 - dd_sinhx2*dd_sinhx2);	// calculate indivisually
+		t4 = (dd_coshx3*dd_coshx3 - dd_sinhx2*dd_sinhx2);	// using formula
+
+		
+		// how near to 1.0 
+		cout << "base    :" << dd_base  << endl;
+		cout << "dd_sinh :" << dd_sinhx2 << endl;
+		cout << "qd_sinh :" << qd_sinhx << endl;
+		cout << "dd_cosh :" << dd_coshx2 << endl;
+		cout << "qd_cosh :" << qd_coshx << endl;
+		cout << "calc indivisually   (cosh^2 - sinh^2):" << t3 << " diff:" << (t3 - ONE) << endl;
+		cout << "calc using formula  (cosh^2 - sinh^2):" << t4 << " diff:" << (t4 - ONE) << endl;
+		//cout << "calc by sincosh impl(cosh^2 - sinh^2):" << t1 << " diff:" << (t1 - ONE) << endl;
+		//cout << "calc by sincosh    (cosh^2 - sinh^2):" << t2 << " diff:" << (t2 - ONE) << endl;
+
 		cout << endl;
 
-		base = base / x;
-		qd_base = base;
+		if ( abs(t3-ONE) > t3*dd_real::_eps ){
+			flag = false
+		}
+
+		dd_base = dd_base / dd_ten;
+		qd_base = dd_base;
 	}
 
-	return (false);
+	return (flag);
+}
+
+template <class T>
+bool TestSuite<T>::test12() {
+	cout << endl;
+	cout << "Test 12.  sqrt check." << endl;
+	cout.precision(T::_ndigits);
+
+	int digits = T::_ndigits;
+	if (digits > 60){
+		cout.precision(qd_real::_ndigits);
+		qd_real x = qd_real::_pi;
+		x = x * 60 / 180;
+		qd_real s = sin(x);
+		qd_real r = sqrt(1-sqr(cos(x)));
+
+		cout << "s=" << s << endl;
+		cout << "r=" << r << endl;
+		std::cout << endl;
+
+		s.dump_bits("s", std::cout);
+		std::cout << endl;
+		r.dump_bits("r", std::cout);
+		std::cout << endl;
+
+		s.dump_bits2("s", std::cout);
+		r.dump_bits2("r", std::cout);
+		std::cout << endl;
+
+		qd_real err = s * qd_real::_eps;
+		return (abs(s-r) <= err);
+
+	}else{
+		cout.precision(dd_real::_ndigits);
+		dd_real x = dd_real::_pi;
+		x = x * 60 / 180;
+		dd_real s = sin(x);
+		dd_real r = sqrt(1 - sqr(cos(x)));
+
+		cout << "s=" << s << endl;
+		cout << "r=" << r << endl;
+		std::cout << endl;
+
+		s.dump_bits("s", std::cout);
+		std::cout << endl;
+		r.dump_bits("r", std::cout);
+		std::cout << endl;
+
+		s.dump_bits2("s", std::cout);
+		r.dump_bits2("r", std::cout);
+		std::cout << endl;
+
+		dd_real err = s * dd_real::_eps;
+		return (abs(s - r) <= err);
+
+	}
+	
+
+	
 }
 
 
@@ -563,6 +638,7 @@ bool TestSuite<T>::testall() {
   pass &= print_result(test9());
   pass &= print_result(test10());
   pass &= print_result(test11());
+  pass &= print_result(test12());
   return pass;
 }
 
@@ -623,15 +699,15 @@ int main(int argc, char *argv[]) {
     pass &= dd_test.testall();
   }
 
-  //if (flag_test_qd) {
-  //  TestSuite<qd_real> qd_test;
+  if (flag_test_qd) {
+    TestSuite<qd_real> qd_test;
 
-  //  cout << endl;
-  //  cout << "Testing qd_real ..." << endl;
-  //  if (flag_verbose)
-  //    cout << "sizeof(qd_real) = " << sizeof(qd_real) << endl;
-  //  pass &= qd_test.testall();
-  //}
+    cout << endl;
+    cout << "Testing qd_real ..." << endl;
+    if (flag_verbose)
+      cout << "sizeof(qd_real) = " << sizeof(qd_real) << endl;
+    pass &= qd_test.testall();
+  }
   
   fpu_fix_end(&old_cw);
   return (pass ? 0 : 1);
