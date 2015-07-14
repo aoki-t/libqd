@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\qd">
+      <UniqueIdentifier>{e9955e0f-3ef0-470f-9aff-a31ab397df92}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\bits.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_dd.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\c_qd.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dd_const.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dd_real.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fpu.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qd_const.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\qd_real.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\qd\bits.h">
+      <Filter>ヘッダー ファイル\qd</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qd\c_dd.h">
+      <Filter>ヘッダー ファイル\qd</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qd\c_qd.h">
+      <Filter>ヘッダー ファイル\qd</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qd\dd_inline.h">
+      <Filter>ヘッダー ファイル\qd</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qd\dd_real.h">
+      <Filter>ヘッダー ファイル\qd</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qd\fpu.h">
+      <Filter>ヘッダー ファイル\qd</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qd\inline.h">
+      <Filter>ヘッダー ファイル\qd</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qd\qd_inline.h">
+      <Filter>ヘッダー ファイル\qd</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qd\qd_real.h">
+      <Filter>ヘッダー ファイル\qd</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qd\qd_config.h">
+      <Filter>ヘッダー ファイル\qd</Filter>
+    </ClInclude>
+    <ClInclude Include="include\qd\inline4.h">
+      <Filter>ヘッダー ファイル\qd</Filter>
+    </ClInclude>
+    <ClInclude Include="src\config.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
