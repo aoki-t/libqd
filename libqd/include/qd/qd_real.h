@@ -30,130 +30,130 @@
 #include <qd/dd_real.h>
 
 struct QD_API qd_real {
-  double x[4];    /* The Components. */
+	double x[4];    /* The Components. */
 
-  /* Eliminates any zeros in the middle component(s). */
-  void zero_elim();
-  void zero_elim(double &e);
+	/* Eliminates any zeros in the middle component(s). */
+	void zero_elim();
+	void zero_elim(double &e);
 
-  void renorm();
-  void renorm(double &e);
+	void renorm();
+	void renorm(double &e);
 
-  void quick_accum(double d, double &e);
-  void quick_prod_accum(double a, double b, double &e);
+	void quick_accum(double d, double &e);
+	void quick_prod_accum(double a, double b, double &e);
 
-  qd_real(double x0, double x1, double x2, double x3);
-  explicit qd_real(const double *xx);
+	qd_real(double x0, double x1, double x2, double x3);
+	explicit qd_real(const double *xx);
 
-  static const qd_real _2pi;
-  static const qd_real _pi;
-  static const qd_real _3pi4;
-  static const qd_real _pi2;
-  static const qd_real _pi4;
-  static const qd_real _e;
-  static const qd_real _log2;
-  static const qd_real _log10;
-  static const qd_real _nan;
-  static const qd_real _inf;
+	static const qd_real _2pi;
+	static const qd_real _pi;
+	static const qd_real _3pi4;
+	static const qd_real _pi2;
+	static const qd_real _pi4;
+	static const qd_real _e;
+	static const qd_real _log2;
+	static const qd_real _log10;
+	static const qd_real _nan;
+	static const qd_real _inf;
 
-  static const double _eps;
-  static const double _min_normalized;
-  static const qd_real _max;
-  static const qd_real _safe_max;
-  static const int _ndigits;
+	static const double _eps;
+	static const double _min_normalized;
+	static const qd_real _max;
+	static const qd_real _safe_max;
+	static const int _ndigits;
 
-  qd_real();
-  qd_real(const char *s);
-  qd_real(const dd_real &dd);
-  qd_real(double d);
-  qd_real(int i);
+	qd_real();
+	qd_real(const char *s);
+	qd_real(const dd_real &dd);
+	qd_real(double d);
+	qd_real(int i);
 
-  double operator[](int i) const;
-  double &operator[](int i);
+	double operator[](int i) const;
+	double &operator[](int i);
 
-  static void error(const char *msg);
+	static void error(const char *msg);
 
-  bool isnan() const;
-  bool isfinite() const { return QD_ISFINITE(x[0]); }
-  bool isinf() const { return QD_ISINF(x[0]); }
+	bool isnan() const;
+	bool isfinite() const { return QD_ISFINITE(x[0]); }
+	bool isinf() const { return QD_ISINF(x[0]); }
 
-  static qd_real ieee_add(const qd_real &a, const qd_real &b);
-  static qd_real sloppy_add(const qd_real &a, const qd_real &b);
+	static qd_real ieee_add(const qd_real &a, const qd_real &b);
+	static qd_real sloppy_add(const qd_real &a, const qd_real &b);
 
-  qd_real &operator+=(double a);
-  qd_real &operator+=(const dd_real &a);
-  qd_real &operator+=(const qd_real &a);
+	qd_real &operator+=(double a);
+	qd_real &operator+=(const dd_real &a);
+	qd_real &operator+=(const qd_real &a);
 
-  qd_real &operator-=(double a);
-  qd_real &operator-=(const dd_real &a);
-  qd_real &operator-=(const qd_real &a);
+	qd_real &operator-=(double a);
+	qd_real &operator-=(const dd_real &a);
+	qd_real &operator-=(const qd_real &a);
 
-  static qd_real sloppy_mul(const qd_real &a, const qd_real &b);
-  static qd_real accurate_mul(const qd_real &a, const qd_real &b);
+	static qd_real sloppy_mul(const qd_real &a, const qd_real &b);
+	static qd_real accurate_mul(const qd_real &a, const qd_real &b);
 
-  qd_real &operator*=(double a);
-  qd_real &operator*=(const dd_real &a);
-  qd_real &operator*=(const qd_real &a);
+	qd_real &operator*=(double a);
+	qd_real &operator*=(const dd_real &a);
+	qd_real &operator*=(const qd_real &a);
 
-  static qd_real sloppy_div(const qd_real &a, const dd_real &b);
-  static qd_real accurate_div(const qd_real &a, const dd_real &b);
-  static qd_real sloppy_div(const qd_real &a, const qd_real &b);
-  static qd_real accurate_div(const qd_real &a, const qd_real &b);
+	static qd_real sloppy_div(const qd_real &a, const dd_real &b);
+	static qd_real accurate_div(const qd_real &a, const dd_real &b);
+	static qd_real sloppy_div(const qd_real &a, const qd_real &b);
+	static qd_real accurate_div(const qd_real &a, const qd_real &b);
 
-  qd_real &operator/=(double a);
-  qd_real &operator/=(const dd_real &a);
-  qd_real &operator/=(const qd_real &a);
+	qd_real &operator/=(double a);
+	qd_real &operator/=(const dd_real &a);
+	qd_real &operator/=(const qd_real &a);
 
-  qd_real operator^(int n) const;
+	qd_real operator^(int n) const;
 
-  qd_real operator-() const;
+	qd_real operator-() const;
 
-  qd_real &operator=(double a);
-  qd_real &operator=(const dd_real &a);
-  qd_real &operator=(const char *s);
+	qd_real &operator=(double a);
+	qd_real &operator=(const dd_real &a);
+	qd_real &operator=(const char *s);
 
-  bool is_zero() const;
-  bool is_one() const;
-  bool is_positive() const;
-  bool is_negative() const;
+	bool is_zero() const;
+	bool is_one() const;
+	bool is_positive() const;
+	bool is_negative() const;
 
-  static qd_real rand(void);
+	static qd_real rand(void);
 
-  void to_digits(char *s, int &expn, int precision = _ndigits) const;
-  void write(char *s, int len, int precision = _ndigits, 
-      bool showpos = false, bool uppercase = false) const;
-  std::string to_string(int precision = _ndigits, int width = 0, 
-      std::ios_base::fmtflags fmt = static_cast<std::ios_base::fmtflags>(0), 
-      bool showpos = false, bool uppercase = false, char fill = ' ') const;
-  static int read(const char *s, qd_real &a);
+	void to_digits(char *s, int &expn, int precision = _ndigits) const;
+	void write(char *s, int len, int precision = _ndigits, 
+				bool showpos = false, bool uppercase = false) const;
+	std::string to_string(int precision = _ndigits, int width = 0, 
+				std::ios_base::fmtflags fmt = static_cast<std::ios_base::fmtflags>(0), 
+				bool showpos = false, bool uppercase = false, char fill = ' ') const;
+	static int read(const char *s, qd_real &a);
 
-  /* Debugging methods */
-  void dump(const std::string &name = "", std::ostream &os = std::cerr) const;
-  void dump_bits(const std::string &name = "", 
-                 std::ostream &os = std::cerr) const;
-  void dump_bits2(const std::string &name = "",
-                  std::ostream &os = std::cerr) const;
+	/* Debugging methods */
+	void dump(const std::string &name = "", std::ostream &os = std::cerr) const;
+	void dump_bits(const std::string &name = "", 
+					std::ostream &os = std::cerr) const;
+	void dump_bits2(const std::string &name = "",
+					std::ostream &os = std::cerr) const;
 
-  static qd_real debug_rand();
+	static qd_real debug_rand();
 
 };
 
 namespace std {
-  template <>
-  class numeric_limits<qd_real> : public numeric_limits<double> {
-  public:
-    inline static double epsilon() { return qd_real::_eps; }
-    inline static double min() { return qd_real::_min_normalized; }
-    inline static qd_real max() { return qd_real::_max; }
-    inline static qd_real safe_max() { return qd_real::_safe_max; }
-    static const int digits = 209;
-    static const int digits10 = 62;
-  };
+	template <>
+	class numeric_limits<qd_real> : public numeric_limits<double> {
+		public:
+			inline static double epsilon() { return qd_real::_eps; }
+			inline static double min() { return qd_real::_min_normalized; }
+			inline static qd_real max() { return qd_real::_max; }
+			inline static qd_real safe_max() { return qd_real::_safe_max; }
+			static const int digits = 209;
+			static const int digits10 = 62;
+	};
 }
 
 QD_API qd_real polyeval(const qd_real *c, int n, const qd_real &x);
 QD_API qd_real polyroot(const qd_real *c, int n, 
-    const qd_real &x0, int max_iter = 64, double thresh = 0.0);
+                        const qd_real &x0, int max_iter = 64, double thresh = 0.0);
 
 QD_API qd_real qdrand(void);
 QD_API qd_real sqrt(const qd_real &a);
@@ -270,7 +270,7 @@ QD_API qd_real log10(const qd_real &a);
 QD_API qd_real sinh(const qd_real &a);
 QD_API qd_real cosh(const qd_real &a);
 QD_API qd_real tanh(const qd_real &a);
-QD_API void sincosh(const qd_real &a, qd_real &sin_qd, qd_real &cos_qd);
+QD_API void sincosh(const qd_real &a, qd_real &sinh_a, qd_real &cosh_a);
 
 QD_API qd_real asinh(const qd_real &a);
 QD_API qd_real acosh(const qd_real &a);

@@ -47,89 +47,89 @@ void qd_real::error(const char *msg) {
 /********** Multiplications **********/
 
 qd_real nint(const qd_real &a) {
-  double x0, x1, x2, x3;
+	double x0, x1, x2, x3;
 
-  x0 = nint(a[0]);
-  x1 = x2 = x3 = 0.0;
+	x0 = nint(a[0]);
+	x1 = x2 = x3 = 0.0;
 
-  if (x0 == a[0]) {
-    /* First double is already an integer. */
-    x1 = nint(a[1]);
+	if (x0 == a[0]) {
+		/* First double is already an integer. */
+		x1 = nint(a[1]);
 
-    if (x1 == a[1]) {
-      /* Second double is already an integer. */
-      x2 = nint(a[2]);
-      
-      if (x2 == a[2]) {
-        /* Third double is already an integer. */
-        x3 = nint(a[3]);
-      } else {
-        if (std::abs(x2 - a[2]) == 0.5 && a[3] < 0.0) {
-          x2 -= 1.0;
-        }
-      }
+		if (x1 == a[1]) {
+			/* Second double is already an integer. */
+			x2 = nint(a[2]);
+			
+			if (x2 == a[2]) {
+				/* Third double is already an integer. */
+				x3 = nint(a[3]);
+			} else {
+				if (std::abs(x2 - a[2]) == 0.5 && a[3] < 0.0) {
+					x2 -= 1.0;
+				}
+			}
 
-    } else {
-      if (std::abs(x1 - a[1]) == 0.5 && a[2] < 0.0) {
-          x1 -= 1.0;
-      }
-    }
+		} else {
+			if (std::abs(x1 - a[1]) == 0.5 && a[2] < 0.0) {
+					x1 -= 1.0;
+			}
+		}
 
-  } else {
-    /* First double is not an integer. */
-      if (std::abs(x0 - a[0]) == 0.5 && a[1] < 0.0) {
-          x0 -= 1.0;
-      }
-  }
-  
-  renorm(x0, x1, x2, x3);
-  return qd_real(x0, x1, x2, x3);
+	} else {
+		/* First double is not an integer. */
+			if (std::abs(x0 - a[0]) == 0.5 && a[1] < 0.0) {
+					x0 -= 1.0;
+			}
+	}
+	
+	renorm(x0, x1, x2, x3);
+	return qd_real(x0, x1, x2, x3);
 }
 
 qd_real floor(const qd_real &a) {
-  double x0, x1, x2, x3;
-  x1 = x2 = x3 = 0.0;
-  x0 = std::floor(a[0]);
+	double x0, x1, x2, x3;
+	x1 = x2 = x3 = 0.0;
+	x0 = std::floor(a[0]);
 
-  if (x0 == a[0]) {
-    x1 = std::floor(a[1]);
-    
-    if (x1 == a[1]) {
-      x2 = std::floor(a[2]);
+	if (x0 == a[0]) {
+		x1 = std::floor(a[1]);
+		
+		if (x1 == a[1]) {
+			x2 = std::floor(a[2]);
 
-      if (x2 == a[2]) {
-        x3 = std::floor(a[3]);
-      }
-    }
+			if (x2 == a[2]) {
+				x3 = std::floor(a[3]);
+			}
+		}
 
-    renorm(x0, x1, x2, x3);
-    return qd_real(x0, x1, x2, x3);
-  }
+		renorm(x0, x1, x2, x3);
+		return qd_real(x0, x1, x2, x3);
+	}
 
-  return qd_real(x0, x1, x2, x3);
+	return qd_real(x0, x1, x2, x3);
 }
 
 qd_real ceil(const qd_real &a) {
-  double x0, x1, x2, x3;
-  x1 = x2 = x3 = 0.0;
-  x0 = std::ceil(a[0]);
+	double x0, x1, x2, x3;
+	x1 = x2 = x3 = 0.0;
+	x0 = std::ceil(a[0]);
 
-  if (x0 == a[0]) {
-    x1 = std::ceil(a[1]);
-    
-    if (x1 == a[1]) {
-      x2 = std::ceil(a[2]);
+	if (x0 == a[0]) {
+		x1 = std::ceil(a[1]);
+		
+		if (x1 == a[1]) {
+			x2 = std::ceil(a[2]);
 
-      if (x2 == a[2]) {
-        x3 = std::ceil(a[3]);
-      }
-    }
+			if (x2 == a[2]) {
+				x3 = std::ceil(a[3]);
+			}
+		}
 
-    renorm(x0, x1, x2, x3);
-    return qd_real(x0, x1, x2, x3);
-  }
+		renorm(x0, x1, x2, x3);
+		return qd_real(x0, x1, x2, x3);
+	}
 
-  return qd_real(x0, x1, x2, x3);
+	return qd_real(x0, x1, x2, x3);
 }
 
 
@@ -140,222 +140,225 @@ qd_real operator/(const qd_real &a, double b) {
   /* Strategy:  compute approximate quotient using high order
      doubles, and then correct it 3 times using the remainder.
      (Analogous to long division.)                             */
-  double t0, t1;
-  double q0, q1, q2, q3;
-  qd_real r;
+	double t0, t1;
+	double q0, q1, q2, q3;
+	qd_real r;
 
-  q0 = a[0] / b;  /* approximate quotient */
+	q0 = a[0] / b;	/* approximate quotient */
 
-  /* Compute the remainder  a - q0 * b */
-  t0 = two_prod(q0, b, t1);
-  r = a - dd_real(t0, t1);
+	/* Compute the remainder  a - q0 * b */
+	t0 = two_prod(q0, b, t1);
+	r = a - dd_real(t0, t1);
 
-  /* Compute the first correction */
-  q1 = r[0] / b;
-  t0 = two_prod(q1, b, t1);
-  r -= dd_real(t0, t1);
+	/* Compute the first correction */
+	q1 = r[0] / b;
+	t0 = two_prod(q1, b, t1);
+	r -= dd_real(t0, t1);
 
-  /* Second correction to the quotient. */
-  q2 = r[0] / b;
-  t0 = two_prod(q2, b, t1);
-  r -= dd_real(t0, t1);
+	/* Second correction to the quotient. */
+	q2 = r[0] / b;
+	t0 = two_prod(q2, b, t1);
+	r -= dd_real(t0, t1);
 
-  /* Final correction to the quotient. */
-  q3 = r[0] / b;
+	/* Final correction to the quotient. */
+	q3 = r[0] / b;
 
-  renorm(q0, q1, q2, q3);
-  return qd_real(q0, q1, q2, q3);
+	renorm(q0, q1, q2, q3);
+	return qd_real(q0, q1, q2, q3);
 }
 
 qd_real::qd_real(const char *s) {
-  if (qd_real::read(s, *this)) {
-    qd_real::error("(qd_real::qd_real): INPUT ERROR.");
-    *this = qd_real::_nan;
-  }
+	if (qd_real::read(s, *this)) {
+		qd_real::error("(qd_real::qd_real): INPUT ERROR.");
+		*this = qd_real::_nan;
+	}
 }
 
 qd_real &qd_real::operator=(const char *s) {
-  if (qd_real::read(s, *this)) {
-    qd_real::error("(qd_real::operator=): INPUT ERROR.");
-    *this = qd_real::_nan;
-  }
-  return *this;
+	if (qd_real::read(s, *this)) {
+		qd_real::error("(qd_real::operator=): INPUT ERROR.");
+		*this = qd_real::_nan;
+	}
+	return *this;
 }
 
 istream &operator>>(istream &s, qd_real &qd) {
-  char str[255];
-  s >> str;
-  qd = qd_real(str);
-  return s;
+	char str[255];
+	s >> str;
+	qd = qd_real(str);
+	return s;
 }
 
 ostream &operator<<(ostream &os, const qd_real &qd) {
-  bool showpos = (os.flags() & ios_base::showpos) != 0;
-  bool uppercase = (os.flags() & ios_base::uppercase) != 0;
-  return os << qd.to_string((int)os.precision(), (int)os.width(), os.flags(), 
-      showpos, uppercase, os.fill());
+	bool showpos = (os.flags() & ios_base::showpos) != 0;
+	bool uppercase = (os.flags() & ios_base::uppercase) != 0;
+	return os << qd.to_string((int)os.precision(), (int)os.width(), os.flags(), 
+				showpos, uppercase, os.fill());
 }
 
 /* Read a quad-double from s. */
 int qd_real::read(const char *s, qd_real &qd) {
-  const char *p = s;
-  char ch;
-  int sign = 0;
-  int point = -1;  /* location of decimal point */
-  int nd = 0;      /* number of digits read */
-  int e = 0;       /* exponent. */
-  bool done = false;
-  qd_real r = 0.0;  /* number being read */
+	const char *p = s;
+	char ch;
+	int sign = 0;
+	int point = -1;		/* location of decimal point */
+	int nd = 0;			/* number of digits read */
+	int e = 0;			/* exponent. */
+	bool done = false;
+	qd_real r = 0.0;	/* number being read */
 
-  /* Skip any leading spaces */
-  while (*p == ' ') p++;
+	/* Skip any leading spaces */
+	while (*p == ' ') {p++;}
 
-  while (!done && (ch = *p) != '\0') {
-    if (ch >= '0' && ch <= '9') {
-      /* It's a digit */
-      int d = ch - '0';
-      r *= 10.0;
-      r += static_cast<double>(d);
-      nd++;
-    } else {
-      /* Non-digit */
-      switch (ch) {
-      case '.':
-        if (point >= 0)
-          return -1;   /* we've already encountered a decimal point. */
-        point = nd;
-        break;
-      case '-':
-      case '+':
-        if (sign != 0 || nd > 0)
-          return -1;  /* we've already encountered a sign, or if its
-                            not at first position. */
-        sign = (ch == '-') ? -1 : 1;
-        break;
-      case 'E':
-      case 'e':
-        int nread;
-        nread = sscanf_s(p + 1, "%d", &e);
-        done = true;
-        if (nread != 1)
-          return -1;  /* read of exponent failed. */
-        break;
-      case ' ':
-        done = true;
-        break;
-      default:
-        return -1;
-      
-      }
-    }
+	while (!done && (ch = *p) != '\0') {
+		if (ch >= '0' && ch <= '9') {
+			/* It's a digit */
+			int d = ch - '0';
+			r *= 10.0;
+			r += static_cast<double>(d);
+			nd++;
+		} else {
+			/* Non-digit */
+			switch (ch) {
+			case '.':
+				if (point >= 0) {
+					return -1;	 /* we've already encountered a decimal point. */
+				}
+				point = nd;
+				break;
+			case '-':
+			case '+':
+				if (sign != 0 || nd > 0) {
+					/* we've already encountered a sign, or if its not at first position. */
+					return -1;
+				}
+				sign = (ch == '-') ? -1 : 1;
+				break;
+			case 'E':
+			case 'e':
+				int nread;
+				nread = sscanf_s(p + 1, "%d", &e);
+				done = true;
+				if (nread != 1) {
+					return -1;	/* read of exponent failed. */
+				}
+				break;
+			case ' ':
+				done = true;
+				break;
+			default:
+				return -1;
+			
+			}
+		}
 
-    p++;
-  }
+		p++;
+	}
 
 
 
-  /* Adjust exponent to account for decimal point */
-  if (point >= 0) {
-    e -= (nd - point);
-  }
+	/* Adjust exponent to account for decimal point */
+	if (point >= 0) {
+		e -= (nd - point);
+	}
 
-  /* Multiply the the exponent */
-  if (e != 0) {
-    r *= (qd_real(10.0) ^ e);
-  }
+	/* Multiply the the exponent */
+	if (e != 0) {
+		r *= (qd_real(10.0) ^ e);
+	}
 
-  qd = (sign < 0) ? -r : r;
-  return 0;
+	qd = (sign < 0) ? -r : r;
+	return 0;
 }
 
 void qd_real::to_digits(char *s, int &expn, int precision) const {
-  int D = precision + 1;  /* number of digits to compute */
+	int D = precision + 1;  /* number of digits to compute */
 
-  qd_real r = abs(*this);
-  int e;  /* exponent */
-  int i, d;
+	qd_real r = abs(*this);
+	int e;	/* exponent */
+	int i, d;
 
-  if (x[0] == 0.0) {
-    /* this == 0.0 */
-    expn = 0;
-    for (i = 0; i < precision; i++) s[i] = '0';
-    return;
-  }
+	if (x[0] == 0.0) {
+		/* this == 0.0 */
+		expn = 0;
+		for (i = 0; i < precision; i++) {s[i] = '0';}
+		return;
+	}
 
-  /* First determine the (approximate) exponent. */
-  e = static_cast<int>(std::floor(std::log10(std::abs(x[0]))));
+	/* First determine the (approximate) exponent. */
+	e = static_cast<int>(std::floor(std::log10(std::abs(x[0]))));
 
-  if (e < -300) {
-    r *= qd_real(10.0) ^ 300;
-    r /= qd_real(10.0) ^ (e + 300);
-  } else if (e > 300) {
-    r = ldexp(r, -53);
-    r /= qd_real(10.0) ^ e;
-    r = ldexp(r, 53);
-  } else {
-    r /= qd_real(10.0) ^ e;
-  }
+	if (e < -300) {
+		r *= qd_real(10.0) ^ 300;
+		r /= qd_real(10.0) ^ (e + 300);
+	} else if (e > 300) {
+		r = ldexp(r, -53);
+		r /= qd_real(10.0) ^ e;
+		r = ldexp(r, 53);
+	} else {
+		r /= qd_real(10.0) ^ e;
+	}
 
-  /* Fix exponent if we are off by one */
-  if (r >= 10.0) {
-    r /= 10.0;
-    e++;
-  } else if (r < 1.0) {
-    r *= 10.0;
-    e--;
-  }
+	/* Fix exponent if we are off by one */
+	if (r >= 10.0) {
+		r /= 10.0;
+		e++;
+	} else if (r < 1.0) {
+		r *= 10.0;
+		e--;
+	}
 
-  if (r >= 10.0 || r < 1.0) {
-    qd_real::error("(qd_real::to_digits): can't compute exponent.");
-    return;
-  }
+	if (r >= 10.0 || r < 1.0) {
+		qd_real::error("(qd_real::to_digits): can't compute exponent.");
+		return;
+	}
 
-  /* Extract the digits */
-  for (i = 0; i < D; i++) {
-    d = static_cast<int>(r[0]);
-    r -= d;
-    r *= 10.0;
+	/* Extract the digits */
+	for (i = 0; i < D; i++) {
+		d = static_cast<int>(r[0]);
+		r -= d;
+		r *= 10.0;
 
-    s[i] = static_cast<char>(d + '0');
-  }
+		s[i] = static_cast<char>(d + '0');
+	}
 
-  /* Fix out of range digits. */
-  for (i = D-1; i > 0; i--) {
-    if (s[i] < '0') {
-      s[i-1]--;
-      s[i] += 10;
-    } else if (s[i] > '9') {
-      s[i-1]++;
-      s[i] -= 10;
-    }
-  }
+	/* Fix out of range digits. */
+	for (i = D-1; i > 0; i--) {
+		if (s[i] < '0') {
+			s[i-1]--;
+			s[i] += 10;
+		} else if (s[i] > '9') {
+			s[i-1]++;
+			s[i] -= 10;
+		}
+	}
 
-  if (s[0] <= '0') {
-    qd_real::error("(qd_real::to_digits): non-positive leading digit.");
-    return;
-  }
+	if (s[0] <= '0') {
+		qd_real::error("(qd_real::to_digits): non-positive leading digit.");
+		return;
+	}
 
-  /* Round, handle carry */
-  if (s[D-1] >= '5') {
-    s[D-2]++;
+	/* Round, handle carry */
+	if (s[D-1] >= '5') {
+		s[D-2]++;
 
-    i = D-2;
-    while (i > 0 && s[i] > '9') {
-      s[i] -= 10;
-      s[--i]++;
-    }
-  }
+		i = D-2;
+		while (i > 0 && s[i] > '9') {
+			s[i] -= 10;
+			s[--i]++;
+		}
+	}
 
-  /* If first digit is 10, shift everything. */
-  if (s[0] > '9') { 
-    e++; 
-    for (i = precision; i >= 2; i--) s[i] = s[i-1]; 
-    s[0] = '1';
-    s[1] = '0';
-  }
+	/* If first digit is 10, shift everything. */
+	if (s[0] > '9') { 
+		e++; 
+		for (i = precision; i >= 2; i--) {s[i] = s[i-1];}
+		s[0] = '1';
+		s[1] = '0';
+	}
 
-  s[precision] = 0;
-  expn = e;
+	s[precision] = 0;
+	expn = e;
 }
 
 /* Writes the quad-double number into the character array s of length len.
@@ -364,262 +367,270 @@ void qd_real::to_digits(char *s, int &expn, int precision) const {
    showpos indicates whether to use the + sign, and uppercase indicates
    whether the E or e is to be used for the exponent. */
 void qd_real::write(char *s, int len, int precision, 
-    bool showpos, bool uppercase) const {
-  string str = to_string(precision, 0, ios_base::scientific, showpos, uppercase);
-  strncpy_s(s, str.length(), str.c_str(), len - 1);
-  s[len-1] = 0;
+					bool showpos, bool uppercase) const {
+	string str = to_string(precision, 0, ios_base::scientific, showpos, uppercase);
+	strncpy_s(s, str.length(), str.c_str(), len - 1);
+	s[len-1] = 0;
 }
 
 void round_string_qd(char *s, int precision, int *offset){
-	/*
-	 Input string must be all digits or errors will occur.
-	 */
+/*
+ Input string must be all digits or errors will occur.
+ */
 
 	int i;
 	int D = precision ;
 
 	/* Round, handle carry */
-	  if (s[D-1] >= '5') {
-	    s[D-2]++;
+	if (s[D-1] >= '5') {
+		s[D-2]++;
 
-	    i = D-2;
-	    while (i > 0 && s[i] > '9') {
-	      s[i] -= 10;
-	      s[--i]++;
-	    }
-	  }
+		i = D-2;
+		while (i > 0 && s[i] > '9') {
+			s[i] -= 10;
+			s[--i]++;
+		}
+	}
 
-	  /* If first digit is 10, shift everything. */
-	  if (s[0] > '9') {
-	    // e++; // don't modify exponent here
-	    for (i = precision; i >= 2; i--) s[i] = s[i-1];
-	    s[0] = '1';
-	    s[1] = '0';
+	/* If first digit is 10, shift everything. */
+	if (s[0] > '9') {
+		// e++; // don't modify exponent here
+		for (i = precision; i >= 2; i--) {s[i] = s[i-1];}
+		s[0] = '1';
+		s[1] = '0';
 
-	    (*offset)++ ; // now offset needs to be increased by one
-	    precision++ ;
-	  }
+		(*offset)++ ; // now offset needs to be increased by one
+		precision++ ;
+	}
 
-	  s[precision] = 0; // add terminator for array
+	s[precision] = 0; // add terminator for array
 }
 
 
 string qd_real::to_string(int precision, int width, ios_base::fmtflags fmt, 
-    bool showpos, bool uppercase, char fill) const {
-  string s;
-  bool fixed = (fmt & ios_base::fixed) != 0;
-  bool sgn = true;
-  int i, e = 0;
+		bool showpos, bool uppercase, char fill) const {
+	string s;
+	bool fixed = (fmt & ios_base::fixed) != 0;
+	bool sgn = true;
+	int i, e = 0;
 
-  if (isinf()) {
-    if (*this < 0.0)
-      s += '-';
-    else if (showpos)
-      s += '+';
-    else
-      sgn = false;
-    s += uppercase ? "INF" : "inf";
-  } else if (isnan()) {
-    s = uppercase ? "NAN" : "nan";
-    sgn = false;
-  } else {
-    if (*this < 0.0)
-      s += '-';
-    else if (showpos)
-      s += '+';
-    else
-      sgn = false;
+	if (isinf()) {
+		if (*this < 0.0) {
+			s += '-';
+		} else if (showpos) {
+			s += '+';
+		} else {
+			sgn = false;
+		}
+		s += uppercase ? "INF" : "inf";
+	} else if (isnan()) {
+		s = uppercase ? "NAN" : "nan";
+		sgn = false;
+	} else {
+		if (*this < 0.0) {
+			s += '-';
+		} else if (showpos) {
+			s += '+';
+		} else {
+			sgn = false;
+		}
 
-    if (*this == 0.0) {
-      /* Zero case */
-      s += '0';
-      if (precision > 0) {
-        s += '.';
-        s.append(precision, '0');
-      }
-    } else {
-      /* Non-zero case */
-      int off = (fixed ? (1 + to_int(floor(log10(abs(*this))))) : 1);
-      int d = precision + off;
+		if (*this == 0.0) {
+			/* Zero case */
+			s += '0';
+			if (precision > 0) {
+				s += '.';
+				s.append(precision, '0');
+			}
+		} else {
+			/* Non-zero case */
+			int off = (fixed ? (1 + to_int(floor(log10(abs(*this))))) : 1);
+			int d = precision + off;
 
-      int d_with_extra = d;
-      if(fixed)
-    	  d_with_extra = std::max(120, d); // longer than the max accuracy for DD
+			int d_with_extra = d;
+			if (fixed) {
+				d_with_extra = std::max(120, d); // longer than the max accuracy for DD
+			}
+			// highly special case - fixed mode, precision is zero, abs(*this) < 1.0
+			// without this trap a number like 0.9 printed fixed with 0 precision prints as 0
+			// should be rounded to 1.
+			if (fixed && (precision == 0) && (abs(*this) < 1.0)) {
+				if (abs(*this) >= 0.5) {
+					s += '1';
+				} else {
+					s += '0';
+				}
+				return s;
+			}
 
-      // highly special case - fixed mode, precision is zero, abs(*this) < 1.0
-      // without this trap a number like 0.9 printed fixed with 0 precision prints as 0
-      // should be rounded to 1.
-      if(fixed && (precision == 0) && (abs(*this) < 1.0)){
-    	  if(abs(*this) >= 0.5)
-    		  s += '1';
-    	  else
-    		  s += '0';
+			// handle near zero to working precision (but not exactly zero)
+			if (fixed && d <= 0) {
+				s += '0';
+				if (precision > 0) {
+					s += '.';
+					s.append(precision, '0');
+				}
+			} else {	// default
 
-    	  return s;
-      }
+				char *t ; // = new char[d+1];
+				int j;
 
-      // handle near zero to working precision (but not exactly zero)
-      if (fixed && d <= 0) {
-        s += '0';
-        if (precision > 0) {
-          s += '.';
-          s.append(precision, '0');
-        }
-      } else {  // default
-
-        char *t ; // = new char[d+1];
-        int j;
-
-        if(fixed){
-        	t = new char[d_with_extra+1];
-        	to_digits(t, e, d_with_extra);
-        }
-        else{
-        	t = new char[d+1];
-        	to_digits(t, e, d);
-        }
+				if (fixed) {
+					t = new char[d_with_extra+1];
+					to_digits(t, e, d_with_extra);
+				} else {
+					t = new char[d+1];
+					to_digits(t, e, d);
+				}
 
 
-        if (fixed) {
-          // fix the string if it's been computed incorrectly
-          // round here in the decimal string if required
-          round_string_qd(t, d + 1 , &off);
+				if (fixed) {
+					// fix the string if it's been computed incorrectly
+					// round here in the decimal string if required
+					round_string_qd(t, d + 1 , &off);
 
-          if (off > 0) {
-            for (i = 0; i < off; i++) s += t[i];
-            if (precision > 0) {
-              s += '.';
-              for (j = 0; j < precision; j++, i++) s += t[i];
-            }
-          } else {
-            s += "0.";
-            if (off < 0) s.append(-off, '0');
-            for (i = 0; i < d; i++) s += t[i];
-          }
-        } else {
-          s += t[0];
-          if (precision > 0) s += '.';
+					if (off > 0) {
+						for (i = 0; i < off; i++) {s += t[i];}
+						if (precision > 0) {
+							s += '.';
+							for (j = 0; j < precision; j++, i++) {s += t[i];}
+						}
+					} else {
+						s += "0.";
+						if (off < 0) s.append(-off, '0');
+						for (i = 0; i < d; i++) {s += t[i];}
+					}
+				} else {
+					s += t[0];
+					if (precision > 0) s += '.';
 
-	  for (i = 1; (i<=precision) & (i<d+1); i++)
-            s += t[i];
+					for (i = 1; (i<=precision) & (i<d+1); i++){
+						s += t[i];
+					}
+				}
+				delete [] t;
+			}
+		}
 
-        }
-		delete [] t;
-      }
-    }
+		// trap for improper offset with large values
+		// without this trap, output of values of the for 10^j - 1 fail for j > 28
+		// and are output with the point in the wrong place, leading to a dramatically off value
+		if(fixed && (precision > 0)){
+			// make sure that the value isn't dramatically larger
+			double from_string = atof(s.c_str());
 
-    // trap for improper offset with large values
-    // without this trap, output of values of the for 10^j - 1 fail for j > 28
-    // and are output with the point in the wrong place, leading to a dramatically off value
-    if(fixed && (precision > 0)){
-    	// make sure that the value isn't dramatically larger
-    	double from_string = atof(s.c_str());
+			// if this ratio is large, then we've got problems
+			if( fabs( from_string / this->x[0] ) > 3.0 ){
 
-    	// if this ratio is large, then we've got problems
-    	if( fabs( from_string / this->x[0] ) > 3.0 ){
+				// loop on the string, find the point, move it up one
+				// don't act on the first character
+				for(i=1; (unsigned int)i < s.length(); i++){
+					if(s[i] == '.'){
+						s[i] = s[i-1] ;
+						s[i-1] = '.' ;
+						break;
+					}
+				}
 
-    		// loop on the string, find the point, move it up one
-    		// don't act on the first character
-    		for(i=1; (unsigned int)i < s.length(); i++){
-    			if(s[i] == '.'){
-    				s[i] = s[i-1] ;
-    				s[i-1] = '.' ;
-    				break;
-    			}
-    		}
+				from_string = atof(s.c_str());
+				// if this ratio is large, then the string has not been fixed
+				if( fabs( from_string / this->x[0] ) > 3.0 ){
+					dd_real::error("Re-rounding unsuccessful in large number fixed point trap.") ;
+				}
+			}
+		}
 
-        	from_string = atof(s.c_str());
-        	// if this ratio is large, then the string has not been fixed
-        	if( fabs( from_string / this->x[0] ) > 3.0 ){
-        		dd_real::error("Re-rounding unsuccessful in large number fixed point trap.") ;
-        	}
-    	}
-    }
+		if (!fixed) {
+			/* Fill in exponent part */
+			s += uppercase ? 'E' : 'e';
+			append_expn(s, e);
+		}
+	}
 
-    if (!fixed) {
-      /* Fill in exponent part */
-      s += uppercase ? 'E' : 'e';
-      append_expn(s, e);
-    }
-  }
+	/* Fill in the blanks */
+	int len = (int)s.length();
+	if (len < width) {
+		int delta = width - len;
+		if (fmt & ios_base::internal) {
+			if (sgn) {
+				s.insert(static_cast<string::size_type>(1), delta, fill);
+			} else {
+				s.insert(static_cast<string::size_type>(0), delta, fill);
+			}
+		} else if (fmt & ios_base::left) {
+			s.append(delta, fill);
+		} else {
+			s.insert(static_cast<string::size_type>(0), delta, fill);
+		}
+	}
 
-  /* Fill in the blanks */
-  int len = (int)s.length();
-  if (len < width) {
-    int delta = width - len;
-    if (fmt & ios_base::internal) {
-      if (sgn)
-        s.insert(static_cast<string::size_type>(1), delta, fill);
-      else
-        s.insert(static_cast<string::size_type>(0), delta, fill);
-    } else if (fmt & ios_base::left) {
-      s.append(delta, fill);
-    } else {
-      s.insert(static_cast<string::size_type>(0), delta, fill);
-    }
-  }
-
-  return s;
+	return s;
 }
 
 /* Computes  qd^n, where n is an integer. */
 qd_real pow(const qd_real &a, int n) {
-  if (n == 0)
-    return 1.0;
+	if (n == 0) {
+		return 1.0;
+	}
 
-  qd_real r = a;   /* odd-case multiplier */
-  qd_real s = 1.0;  /* current answer */
-  int N = std::abs(n);
+	qd_real r = a;		/* odd-case multiplier */
+	qd_real s = 1.0;	/* current answer */
+	int N = std::abs(n);
 
-  if (N > 1) {
+	if (N > 1) {
 
-    /* Use binary exponentiation. */
-    while (N > 0) {
-      if (N % 2 == 1) {
-        /* If odd, multiply by r. Note eventually N = 1, so this
-         eventually executes. */
-        s *= r;
-      }
-      N /= 2;
-      if (N > 0)
-        r = sqr(r);
-    }
+		/* Use binary exponentiation. */
+		while (N > 0) {
+			if (N % 2 == 1) {
+				/* If odd, multiply by r.
+				 Note eventually N = 1, so this eventually executes. */
+				s *= r;
+			}
+			N /= 2;
+			if (N > 0) {
+				r = sqr(r);
+			}
+		}
 
-  } else {
-    s = r;
-  }
+	} else {
+		s = r;
+	}
 
-  if (n < 0)
-    return (1.0 / s);
+	if (n < 0) {
+		return (1.0 / s);
+	}
 
-  return s;
+	return s;
 }
 
 qd_real pow(const qd_real &a, const qd_real &b) {
-  return exp(b * log(a));
+	return exp(b * log(a));
 }
 
 qd_real npwr(const qd_real &a, int n) {
-  return pow(a, n);
+	return pow(a, n);
 }
 
 /* Debugging routines */
 void qd_real::dump_bits(const string &name, std::ostream &os) const {
-  string::size_type len = name.length();
-  if (len > 0) {
-    os << name << " = ";
-    len += 3;
-  }
-  os << "[ ";
-  len += 2;
-  for (int j = 0; j < 4; j++) {
-    if (j > 0) for (string::size_type i = 0; i < len; i++) os << ' ';
-    print_double_info(os, x[j]);
-    if (j < 3)
-      os << endl;
-    else
-      os << " ]" << endl;
-  }
+	string::size_type len = name.length();
+	if (len > 0) {
+		os << name << " = ";
+		len += 3;
+	}
+	os << "[ ";
+	len += 2;
+	for (int j = 0; j < 4; j++) {
+		if (j > 0) {
+			for (string::size_type i = 0; i < len; i++) {os << ' ';}
+		}
+		print_double_info(os, x[j]);
+		if (j < 3) {
+			os << endl;
+		} else {
+			os << " ]" << endl;
+		}
+	}
 }
 
 char qd_bits[QD_DUMP_SIZE];
@@ -660,9 +671,10 @@ void qd_real::dump_bits2(const string &name, std::ostream &os) const {
 					x2 -= d;
 					//os << (same_s ? '1' : '0');
 					qd_bits[idx] = (same_s ? '1' : '0');
-				} else
+				} else {
 					//os << (same_s ? '0' : '1');
 					qd_bits[idx] = (same_s ? '0' : '1');
+				}
 				d *= 0.5;
 				idx++;
 			}
@@ -679,8 +691,7 @@ void qd_real::dump_bits2(const string &name, std::ostream &os) const {
 
 							if (qd_bits[idx - k + m] == '1') {
 								qd_bits[idx - k + m] = '0';
-							}
-							else {
+							} else {
 								cerr << "should not occur! " << endl;
 								//qd_bits[idx - k + m] == '1';
 							}
@@ -705,123 +716,122 @@ void qd_real::dump_bits2(const string &name, std::ostream &os) const {
 }
 
 void qd_real::dump(const string &name, std::ostream &os) const {
-  std::ios_base::fmtflags old_flags = os.flags();
-  std::streamsize old_prec = os.precision(19);
-  os << std::scientific;
+	std::ios_base::fmtflags old_flags = os.flags();
+	std::streamsize old_prec = os.precision(19);
+	os << std::scientific;
 
-  string::size_type len = name.length();
-  if (len > 0) {
-    os << name << " = ";
-    len += 3;
-  }
-  os << "[ ";
-  len += 2;
-  os << setw(27) << x[0] << ", " << setw(26) << x[1] << "," << endl;
-  for (string::size_type i = 0; i < len; i++) os << ' ';
-  os << setw(27) << x[2] << ", " << setw(26) << x[3] << "  ]" << endl;
+	string::size_type len = name.length();
+	if (len > 0) {
+		os << name << " = ";
+		len += 3;
+	}
+	os << "[ ";
+	len += 2;
+	os << setw(27) << x[0] << ", " << setw(26) << x[1] << "," << endl;
+	for (string::size_type i = 0; i < len; i++) {os << ' ';}
+	os << setw(27) << x[2] << ", " << setw(26) << x[3] << "	]" << endl;
 
-  os.precision(old_prec);
-  os.flags(old_flags);
+	os.precision(old_prec);
+	os.flags(old_flags);
 }
 
 /* Divisions */
 /* quad-double / double-double */
 qd_real qd_real::sloppy_div(const qd_real &a, const dd_real &b) {
-  double q0, q1, q2, q3;
-  qd_real r;
-  qd_real qd_b(b);
+	double q0, q1, q2, q3;
+	qd_real r;
+	qd_real qd_b(b);
 
-  q0 = a[0] / b._hi();
-  r = a - q0 * qd_b;
+	q0 = a[0] / b._hi();
+	r = a - q0 * qd_b;
 
-  q1 = r[0] / b._hi();
-  r -= (q1 * qd_b);
+	q1 = r[0] / b._hi();
+	r -= (q1 * qd_b);
 
-  q2 = r[0] / b._hi();
-  r -= (q2 * qd_b);
+	q2 = r[0] / b._hi();
+	r -= (q2 * qd_b);
 
-  q3 = r[0] / b._hi();
+	q3 = r[0] / b._hi();
 
-  ::renorm(q0, q1, q2, q3);
-  return qd_real(q0, q1, q2, q3);
+	::renorm(q0, q1, q2, q3);
+	return qd_real(q0, q1, q2, q3);
 }
 
 qd_real qd_real::accurate_div(const qd_real &a, const dd_real &b) {
-  double q0, q1, q2, q3, q4;
-  qd_real r;
-  qd_real qd_b(b);
+	double q0, q1, q2, q3, q4;
+	qd_real r;
+	qd_real qd_b(b);
 
-  q0 = a[0] / b._hi();
-  r = a - q0 * qd_b;
+	q0 = a[0] / b._hi();
+	r = a - q0 * qd_b;
 
-  q1 = r[0] / b._hi();
-  r -= (q1 * qd_b);
+	q1 = r[0] / b._hi();
+	r -= (q1 * qd_b);
 
-  q2 = r[0] / b._hi();
-  r -= (q2 * qd_b);
+	q2 = r[0] / b._hi();
+	r -= (q2 * qd_b);
 
-  q3 = r[0] / b._hi();
-  r -= (q3 * qd_b);
+	q3 = r[0] / b._hi();
+	r -= (q3 * qd_b);
 
-  q4 = r[0] / b._hi();
+	q4 = r[0] / b._hi();
 
-  ::renorm(q0, q1, q2, q3, q4);
-  return qd_real(q0, q1, q2, q3);
+	::renorm(q0, q1, q2, q3, q4);
+	return qd_real(q0, q1, q2, q3);
 }
 
 /* quad-double / quad-double */
 qd_real qd_real::sloppy_div(const qd_real &a, const qd_real &b) {
-  double q0, q1, q2, q3;
+	double q0, q1, q2, q3;
 
-  qd_real r;
+	qd_real r;
 
-  q0 = a[0] / b[0];
-  r = a - (b * q0);
+	q0 = a[0] / b[0];
+	r = a - (b * q0);
 
-  q1 = r[0] / b[0];
-  r -= (b * q1);
+	q1 = r[0] / b[0];
+	r -= (b * q1);
 
-  q2 = r[0] / b[0];
-  r -= (b * q2);
+	q2 = r[0] / b[0];
+	r -= (b * q2);
 
-  q3 = r[0] / b[0];
+	q3 = r[0] / b[0];
 
-  ::renorm(q0, q1, q2, q3);
+	::renorm(q0, q1, q2, q3);
 
-  return qd_real(q0, q1, q2, q3);
+	return qd_real(q0, q1, q2, q3);
 }
 
 qd_real qd_real::accurate_div(const qd_real &a, const qd_real &b) {
-  double q0, q1, q2, q3;
+	double q0, q1, q2, q3;
 
-  qd_real r;
+	qd_real r;
 
-  q0 = a[0] / b[0];
-  r = a - (b * q0);
+	q0 = a[0] / b[0];
+	r = a - (b * q0);
 
-  q1 = r[0] / b[0];
-  r -= (b * q1);
+	q1 = r[0] / b[0];
+	r -= (b * q1);
 
-  q2 = r[0] / b[0];
-  r -= (b * q2);
+	q2 = r[0] / b[0];
+	r -= (b * q2);
 
-  q3 = r[0] / b[0];
+	q3 = r[0] / b[0];
 
-  r -= (b * q3);
-  double q4 = r[0] / b[0];
+	r -= (b * q3);
+	double q4 = r[0] / b[0];
 
-  ::renorm(q0, q1, q2, q3, q4);
+	::renorm(q0, q1, q2, q3, q4);
 
-  return qd_real(q0, q1, q2, q3);
+	return qd_real(q0, q1, q2, q3);
 }
 
 QD_API qd_real sqrt(const qd_real &a) {
   /* Strategy:  
-
      Perform the following Newton iteration:
 
        x' = x + (1 - a * x^2) * x / 2;
-       
+
      which converges to 1/sqrt(a), starting with the
      double precision approximation to 1/sqrt(a).
      Since Newton's iteration more or less doubles the
@@ -829,39 +839,37 @@ QD_API qd_real sqrt(const qd_real &a) {
      twice.
   */
 
-  if (a.is_zero())
-    return 0.0;
+	if (a.is_zero()) {
+		return 0.0;
+	}
 
-  if (a.is_negative()) {
-    qd_real::error("(qd_real::sqrt): Negative argument.");
-    return qd_real::_nan;
-  }
+	if (a.is_negative()) {
+		qd_real::error("(qd_real::sqrt): Negative argument.");
+		return qd_real::_nan;
+	}
 
-  qd_real r = (1.0 / std::sqrt(a[0]));
-  qd_real h = mul_pwr2(a, 0.5);
+	qd_real r = (1.0 / std::sqrt(a[0]));
+	qd_real h = mul_pwr2(a, 0.5);
 
-  r += ((0.5 - h * sqr(r)) * r);
-  r += ((0.5 - h * sqr(r)) * r);
-  r += ((0.5 - h * sqr(r)) * r);
+	r += ((0.5 - h * sqr(r)) * r);
+	r += ((0.5 - h * sqr(r)) * r);
+	r += ((0.5 - h * sqr(r)) * r);
 
-  r *= a;
-  return r;
+	r *= a;
+	return r;
 }
 
 
 /* Computes the n-th root of a */
 qd_real nroot(const qd_real &a, int n) {
   /* Strategy:  Use Newton's iteration to solve
-     
         1/(x^n) - a = 0
 
      Newton iteration becomes
-
         x' = x + x * (1 - a * x^n) / n
 
      Since Newton's iteration converges quadratically, 
      we only need to perform it twice.
-
    */
 	if (n <= 0) {
 		qd_real::error("(qd_real::nroot): N must be positive.");
@@ -928,54 +936,55 @@ qd_real exp(const qd_real &a) {
      evaluated using the familiar Taylor series.  Reducing the 
      argument substantially speeds up the convergence.       */  
 
-  const double k = ldexp(1.0, 16);
-  const double inv_k = 1.0 / k;
+	const double k = ldexp(1.0, 16);
+	const double inv_k = 1.0 / k;
 
-  if (a[0] <= -709.0)
-    return 0.0;
+	if (a[0] <= -709.0) {
+		return 0.0;
+	}
+	if (a[0] >=	709.0) {
+		return qd_real::_inf;
+	}
+	if (a.is_zero()) {
+		return 1.0;
+	}
+	if (a.is_one()) {
+		return qd_real::_e;
+	}
+	
+	double m = std::floor(a.x[0] / qd_real::_log2.x[0] + 0.5);
+	qd_real r = mul_pwr2(a - qd_real::_log2 * m, inv_k);
+	qd_real s, p, t;
+	double thresh = inv_k * qd_real::_eps;
 
-  if (a[0] >=  709.0)
-    return qd_real::_inf;
+	p = sqr(r);
+	s = r + mul_pwr2(p, 0.5);
+	int i = 0;
+	do {
+		p *= r;
+		t = p * inv_fact[i];
+		s += t;
+		++i;
+	} while (std::abs(to_double(t)) > thresh && i < 9);
 
-  if (a.is_zero())
-    return 1.0;
-
-  if (a.is_one())
-    return qd_real::_e;
-
-  double m = std::floor(a.x[0] / qd_real::_log2.x[0] + 0.5);
-  qd_real r = mul_pwr2(a - qd_real::_log2 * m, inv_k);
-  qd_real s, p, t;
-  double thresh = inv_k * qd_real::_eps;
-
-  p = sqr(r);
-  s = r + mul_pwr2(p, 0.5);
-  int i = 0;
-  do {
-    p *= r;
-    t = p * inv_fact[i];
-    s += t;
-    ++i;
-  } while (std::abs(to_double(t)) > thresh && i < 9);
-
-  s = mul_pwr2(s, 2.0) + sqr(s);
-  s = mul_pwr2(s, 2.0) + sqr(s);
-  s = mul_pwr2(s, 2.0) + sqr(s);
-  s = mul_pwr2(s, 2.0) + sqr(s);
-  s = mul_pwr2(s, 2.0) + sqr(s);
-  s = mul_pwr2(s, 2.0) + sqr(s);
-  s = mul_pwr2(s, 2.0) + sqr(s);
-  s = mul_pwr2(s, 2.0) + sqr(s);
-  s = mul_pwr2(s, 2.0) + sqr(s);
-  s = mul_pwr2(s, 2.0) + sqr(s);
-  s = mul_pwr2(s, 2.0) + sqr(s);
-  s = mul_pwr2(s, 2.0) + sqr(s);
-  s = mul_pwr2(s, 2.0) + sqr(s);
-  s = mul_pwr2(s, 2.0) + sqr(s);
-  s = mul_pwr2(s, 2.0) + sqr(s);
-  s = mul_pwr2(s, 2.0) + sqr(s);
-  s += 1.0;
-  return ldexp(s, static_cast<int>(m));
+	s = mul_pwr2(s, 2.0) + sqr(s);
+	s = mul_pwr2(s, 2.0) + sqr(s);
+	s = mul_pwr2(s, 2.0) + sqr(s);
+	s = mul_pwr2(s, 2.0) + sqr(s);
+	s = mul_pwr2(s, 2.0) + sqr(s);
+	s = mul_pwr2(s, 2.0) + sqr(s);
+	s = mul_pwr2(s, 2.0) + sqr(s);
+	s = mul_pwr2(s, 2.0) + sqr(s);
+	s = mul_pwr2(s, 2.0) + sqr(s);
+	s = mul_pwr2(s, 2.0) + sqr(s);
+	s = mul_pwr2(s, 2.0) + sqr(s);
+	s = mul_pwr2(s, 2.0) + sqr(s);
+	s = mul_pwr2(s, 2.0) + sqr(s);
+	s = mul_pwr2(s, 2.0) + sqr(s);
+	s = mul_pwr2(s, 2.0) + sqr(s);
+	s = mul_pwr2(s, 2.0) + sqr(s);
+	s += 1.0;
+	return ldexp(s, static_cast<int>(m));
 }
 
 /* Logarithm.  Computes log(x) in quad-double precision.
@@ -997,30 +1006,30 @@ qd_real log(const qd_real &a) {
      Two iteration is needed, since Newton's iteration 
      approximately doubles the number of digits per iteration. */
 
-  if (a.is_one()) {
-    return 0.0;
-  }
+	if (a.is_one()) {
+		return 0.0;
+	}
 
-  if (a[0] <= 0.0) {
-    qd_real::error("(qd_real::log): Non-positive argument.");
-    return qd_real::_nan;
-  }
+	if (a[0] <= 0.0) {
+		qd_real::error("(qd_real::log): Non-positive argument.");
+		return qd_real::_nan;
+	}
 
-  if (a[0] == 0.0) {
-    return -qd_real::_inf;
-  }
+	if (a[0] == 0.0) {
+		return -qd_real::_inf;
+	}
 
-  qd_real x = std::log(a[0]);   /* Initial approximation */
+	qd_real x = std::log(a[0]);	 /* Initial approximation */
 
-  x = x + a * exp(-x) - 1.0;
-  x = x + a * exp(-x) - 1.0;
-  x = x + a * exp(-x) - 1.0;
+	x = x + a * exp(-x) - 1.0;
+	x = x + a * exp(-x) - 1.0;
+	x = x + a * exp(-x) - 1.0;
 
-  return x;
+	return x;
 }
 
 qd_real log10(const qd_real &a) {
-  return log(a) / qd_real::_log10;
+	return log(a) / qd_real::_log10;
 }
 
 static const qd_real _pi1024 = qd_real(
@@ -1547,51 +1556,51 @@ static const qd_real cos_table[256] = {
 };
 
 static qd_real sin_taylor(const qd_real &a) {
-  const double thresh = 0.5 * qd_real::_eps * std::abs(to_double(a));
-  qd_real p, s, t, x;
+	const double thresh = 0.5 * qd_real::_eps * std::abs(to_double(a));
+	qd_real p, s, t, x;
 
-  if (a.is_zero()) {
-    return 0.0;
-  }
+	if (a.is_zero()) {
+		return 0.0;
+	}
 
-  x = -sqr(a);
-  s = a;
-  p = a;
-  int i = 0;
-  do {
-    p *= x;
-    t = p * inv_fact[i];
-    s += t;
-    i += 2;
-  } while (i < n_inv_fact && std::abs(to_double(t)) > thresh);
+	x = -sqr(a);
+	s = a;
+	p = a;
+	int i = 0;
+	do {
+		p *= x;
+		t = p * inv_fact[i];
+		s += t;
+		i += 2;
+	} while (i < n_inv_fact && std::abs(to_double(t)) > thresh);
 
-  return s;
+	return s;
 }
 
 static qd_real cos_taylor(const qd_real &a) {
-  const double thresh = 0.5 * qd_real::_eps;
-  qd_real p, s, t, x;
+	const double thresh = 0.5 * qd_real::_eps;
+	qd_real p, s, t, x;
 
-  if (a.is_zero()) {
-    return 1.0;
-  }
+	if (a.is_zero()) {
+		return 1.0;
+	}
 
-  x = -sqr(a);
-  s = 1.0 + mul_pwr2(x, 0.5);
-  p = x;
-  int i = 1;
-  do {
-    p *= x;
-    t = p * inv_fact[i];
-    s += t;
-    i += 2;
-  } while (i < n_inv_fact && std::abs(to_double(t)) > thresh);
+	x = -sqr(a);
+	s = 1.0 + mul_pwr2(x, 0.5);
+	p = x;
+	int i = 1;
+	do {
+		p *= x;
+		t = p * inv_fact[i];
+		s += t;
+		i += 2;
+	} while (i < n_inv_fact && std::abs(to_double(t)) > thresh);
 
-  return s;
+	return s;
 }
 
 /* Computes sin(a) and cos(a) using Taylor series.
-Assumes |a| <= pi/2048.                           */
+   Assumes |a| <= pi/2048.                           */
 static void sincos_taylor(const qd_real &a,
 	qd_real &sin_a, qd_real &cos_a) {
 
@@ -1606,7 +1615,6 @@ static void sincos_taylor(const qd_real &a,
 }
 
 qd_real sin(const qd_real &a) {
-
   /* Strategy.  To compute sin(x), we choose integers a, b so that
 
        x = s + a * (pi/2) + b * (pi/1024)
@@ -1616,231 +1624,231 @@ qd_real sin(const qd_real &a) {
      sin(x) from sin(s) and cos(s).  This greatly increases the
      convergence of the sine Taylor series.                          */
 
-  if (a.is_zero()) {
-    return 0.0;
-  }
+	if (a.is_zero()) {
+		return 0.0;
+	}
 
-  // approximately reduce modulo 2*pi
-  qd_real z = nint(a / qd_real::_2pi);
-  qd_real r = a - qd_real::_2pi * z;
+	// approximately reduce modulo 2*pi
+	qd_real z = nint(a / qd_real::_2pi);
+	qd_real r = a - qd_real::_2pi * z;
 
-  // approximately reduce modulo pi/2 and then modulo pi/1024
-  double q = std::floor(r.x[0] / qd_real::_pi2[0] + 0.5);
-  qd_real t = r - qd_real::_pi2 * q;
-  int j = static_cast<int>(q);
-  q = std::floor(t.x[0] / _pi1024[0] + 0.5);
-  t -= _pi1024 * q;
-  int k = static_cast<int>(q);
-  int abs_k = std::abs(k);
+	// approximately reduce modulo pi/2 and then modulo pi/1024
+	double q = std::floor(r.x[0] / qd_real::_pi2[0] + 0.5);
+	qd_real t = r - qd_real::_pi2 * q;
+	int j = static_cast<int>(q);
+	q = std::floor(t.x[0] / _pi1024[0] + 0.5);
+	t -= _pi1024 * q;
+	int k = static_cast<int>(q);
+	int abs_k = std::abs(k);
 
-  if (j < -2 || j > 2) {
-    qd_real::error("(qd_real::sin): Cannot reduce modulo pi/2.");
-    return qd_real::_nan;
-  }
+	if (j < -2 || j > 2) {
+		qd_real::error("(qd_real::sin): Cannot reduce modulo pi/2.");
+		return qd_real::_nan;
+	}
 
-  if (abs_k > 256) {
-    qd_real::error("(qd_real::sin): Cannot reduce modulo pi/1024.");
-    return qd_real::_nan;
-  }
+	if (abs_k > 256) {
+		qd_real::error("(qd_real::sin): Cannot reduce modulo pi/1024.");
+		return qd_real::_nan;
+	}
 
-  if (k == 0) {
-    switch (j) {
-      case 0:
-        return sin_taylor(t);
-      case 1:
-        return cos_taylor(t);
-      case -1:
-        return -cos_taylor(t);
-      default:
-        return -sin_taylor(t);
-    }
-  }
+	if (k == 0) {
+		switch (j) {
+			case 0:
+				return sin_taylor(t);
+			case 1:
+				return cos_taylor(t);
+			case -1:
+				return -cos_taylor(t);
+			default:
+				return -sin_taylor(t);
+		}
+	}
 
-  qd_real sin_t, cos_t;
-  sincos_taylor(t, sin_t, cos_t);
+	qd_real sin_t, cos_t;
+	sincos_taylor(t, sin_t, cos_t);
 
-  qd_real u = cos_table[abs_k-1];
-  qd_real v = sin_table[abs_k-1];
+	qd_real u = cos_table[abs_k-1];
+	qd_real v = sin_table[abs_k-1];
 
-  if (j == 0) {
-    if (k > 0) {
-      r = u * sin_t + v * cos_t;
-    } else {
-      r = u * sin_t - v * cos_t;
-    }
-  } else if (j == 1) {
-    if (k > 0) {
-      r = u * cos_t - v * sin_t;
-    } else {
-      r = u * cos_t + v * sin_t;
-    }
-  } else if (j == -1) {
-    if (k > 0) {
-      r = v * sin_t - u * cos_t;
-    } else {
-      r = - u * cos_t - v * sin_t;
-    }
-  } else {
-    if (k > 0) {
-      r = - u * sin_t - v * cos_t;
-    } else {
-      r = v * cos_t - u * sin_t;
-    }
-  }
+	if (j == 0) {
+		if (k > 0) {
+			r = u * sin_t + v * cos_t;
+		} else {
+			r = u * sin_t - v * cos_t;
+		}
+	} else if (j == 1) {
+		if (k > 0) {
+			r = u * cos_t - v * sin_t;
+		} else {
+			r = u * cos_t + v * sin_t;
+		}
+	} else if (j == -1) {
+		if (k > 0) {
+			r = v * sin_t - u * cos_t;
+		} else {
+			r = - u * cos_t - v * sin_t;
+		}
+	} else {
+		if (k > 0) {
+			r = - u * sin_t - v * cos_t;
+		} else {
+			r = v * cos_t - u * sin_t;
+		}
+	}
 
-  return r;
+	return r;
 }
 
 qd_real cos(const qd_real &a) {
 
-  if (a.is_zero()) {
-    return 1.0;
-  }
+	if (a.is_zero()) {
+		return 1.0;
+	}
 
-  // approximately reduce modulo 2*pi
-  qd_real z = nint(a / qd_real::_2pi);
-  qd_real r = a - qd_real::_2pi * z;
+	// approximately reduce modulo 2*pi
+	qd_real z = nint(a / qd_real::_2pi);
+	qd_real r = a - qd_real::_2pi * z;
 
-  // approximately reduce modulo pi/2 and then modulo pi/1024
-  double q = std::floor(r.x[0] / qd_real::_pi2.x[0] + 0.5);
-  qd_real t = r - qd_real::_pi2 * q;
-  int j = static_cast<int>(q);
-  q = std::floor(t.x[0] / _pi1024.x[0] + 0.5);
-  t -= _pi1024 * q;
-  int k = static_cast<int>(q);
-  int abs_k = std::abs(k);
+	// approximately reduce modulo pi/2 and then modulo pi/1024
+	double q = std::floor(r.x[0] / qd_real::_pi2.x[0] + 0.5);
+	qd_real t = r - qd_real::_pi2 * q;
+	int j = static_cast<int>(q);
+	q = std::floor(t.x[0] / _pi1024.x[0] + 0.5);
+	t -= _pi1024 * q;
+	int k = static_cast<int>(q);
+	int abs_k = std::abs(k);
 
-  if (j < -2 || j > 2) {
-    qd_real::error("(qd_real::cos): Cannot reduce modulo pi/2.");
-    return qd_real::_nan;
-  }
+	if (j < -2 || j > 2) {
+		qd_real::error("(qd_real::cos): Cannot reduce modulo pi/2.");
+		return qd_real::_nan;
+	}
 
-  if (abs_k > 256) {
-    qd_real::error("(qd_real::cos): Cannot reduce modulo pi/1024.");
-    return qd_real::_nan;
-  }
+	if (abs_k > 256) {
+		qd_real::error("(qd_real::cos): Cannot reduce modulo pi/1024.");
+		return qd_real::_nan;
+	}
 
-  if (k == 0) {
-    switch (j) {
-      case 0:
-        return cos_taylor(t);
-      case 1:
-        return -sin_taylor(t);
-      case -1:
-        return sin_taylor(t);
-      default:
-        return -cos_taylor(t);
-    }
-  }
+	if (k == 0) {
+		switch (j) {
+			case 0:
+				return cos_taylor(t);
+			case 1:
+				return -sin_taylor(t);
+			case -1:
+				return sin_taylor(t);
+			default:
+				return -cos_taylor(t);
+		}
+	}
 
-  qd_real sin_t, cos_t;
-  sincos_taylor(t, sin_t, cos_t);
+	qd_real sin_t, cos_t;
+	sincos_taylor(t, sin_t, cos_t);
 
-  qd_real u = cos_table[abs_k-1];
-  qd_real v = sin_table[abs_k-1];
+	qd_real u = cos_table[abs_k-1];
+	qd_real v = sin_table[abs_k-1];
 
-  if (j == 0) {
-    if (k > 0) {
-      r = u * cos_t - v * sin_t;
-    } else {
-      r = u * cos_t + v * sin_t;
-    }
-  } else if (j == 1) {
-    if (k > 0) {
-      r = - u * sin_t - v * cos_t;
-    } else {
-      r = v * cos_t - u * sin_t;
-    }
-  } else if (j == -1) {
-    if (k > 0) {
-      r = u * sin_t + v * cos_t;
-    } else {
-      r = u * sin_t - v * cos_t;
-    }
-  } else {
-    if (k > 0) {
-      r = v * sin_t - u * cos_t;
-    } else {
-      r = - u * cos_t - v * sin_t;
-    }
-  }
+	if (j == 0) {
+		if (k > 0) {
+			r = u * cos_t - v * sin_t;
+		} else {
+			r = u * cos_t + v * sin_t;
+		}
+	} else if (j == 1) {
+		if (k > 0) {
+			r = - u * sin_t - v * cos_t;
+		} else {
+			r = v * cos_t - u * sin_t;
+		}
+	} else if (j == -1) {
+		if (k > 0) {
+			r = u * sin_t + v * cos_t;
+		} else {
+			r = u * sin_t - v * cos_t;
+		}
+	} else {
+		if (k > 0) {
+			r = v * sin_t - u * cos_t;
+		} else {
+			r = - u * cos_t - v * sin_t;
+		}
+	}
 
-  return r;
+	return r;
 }
 
 void sincos(const qd_real &a, qd_real &sin_a, qd_real &cos_a) {
 
-  if (a.is_zero()) {
-    sin_a = 0.0;
-    cos_a = 1.0;
-    return;
-  }
+	if (a.is_zero()) {
+		sin_a = 0.0;
+		cos_a = 1.0;
+		return;
+	}
 
-  // approximately reduce by 2*pi
-  qd_real z = nint(a / qd_real::_2pi);
-  qd_real t = a - qd_real::_2pi * z;
+	// approximately reduce by 2*pi
+	qd_real z = nint(a / qd_real::_2pi);
+	qd_real t = a - qd_real::_2pi * z;
 
-  // approximately reduce by pi/2 and then by pi/1024.
-  double q = std::floor(t.x[0] / qd_real::_pi2.x[0] + 0.5);
-  t -= qd_real::_pi2 * q;
-  int j = static_cast<int>(q);
-  int abs_j = std::abs(j);
-  q = std::floor(t.x[0] / _pi1024.x[0] + 0.5);
-  t -= _pi1024 * q;
-  int k = static_cast<int>(q);
-  int abs_k = std::abs(k);
+	// approximately reduce by pi/2 and then by pi/1024.
+	double q = std::floor(t.x[0] / qd_real::_pi2.x[0] + 0.5);
+	t -= qd_real::_pi2 * q;
+	int j = static_cast<int>(q);
+	int abs_j = std::abs(j);
+	q = std::floor(t.x[0] / _pi1024.x[0] + 0.5);
+	t -= _pi1024 * q;
+	int k = static_cast<int>(q);
+	int abs_k = std::abs(k);
 
-  if (j < -2 || j > 2) {
-    qd_real::error("(qd_real::sincos): Cannot reduce modulo pi/2.");
-    cos_a = sin_a = qd_real::_nan;
-    return;
-  }
+	if (j < -2 || j > 2) {
+		qd_real::error("(qd_real::sincos): Cannot reduce modulo pi/2.");
+		cos_a = sin_a = qd_real::_nan;
+		return;
+	}
 
-  if (abs_k > 256) {
-    qd_real::error("(qd_real::sincos): Cannot reduce modulo pi/1024.");
-    cos_a = sin_a = qd_real::_nan;
-    return;
-  }
+	if (abs_k > 256) {
+		qd_real::error("(qd_real::sincos): Cannot reduce modulo pi/1024.");
+		cos_a = sin_a = qd_real::_nan;
+		return;
+	}
 
-  qd_real sin_t, cos_t;
-  qd_real s, c;
+	qd_real sin_t, cos_t;
+	qd_real s, c;
 
-  sincos_taylor(t, sin_t, cos_t);
+	sincos_taylor(t, sin_t, cos_t);
 
-  if (abs_k == 0) {
-    s = sin_t;
-    c = cos_t;
-  } else {
-    qd_real u = cos_table[abs_k-1];
-    qd_real v = sin_table[abs_k-1];
+	if (abs_k == 0) {
+		s = sin_t;
+		c = cos_t;
+	} else {
+		qd_real u = cos_table[abs_k-1];
+		qd_real v = sin_table[abs_k-1];
 
-    if (k > 0) {
-      s = u * sin_t + v * cos_t;
-      c = u * cos_t - v * sin_t;
-    } else {
-      s = u * sin_t - v * cos_t;
-      c = u * cos_t + v * sin_t;
-    }
-  }
+		if (k > 0) {
+			s = u * sin_t + v * cos_t;
+			c = u * cos_t - v * sin_t;
+		} else {
+			s = u * sin_t - v * cos_t;
+			c = u * cos_t + v * sin_t;
+		}
+	}
 
-  if (abs_j == 0) {
-    sin_a = s;
-    cos_a = c;
-  } else if (j == 1) {
-    sin_a = c;
-    cos_a = -s;
-  } else if (j == -1) {
-    sin_a = -c;
-    cos_a = s;
-  } else {
-    sin_a = -s;
-    cos_a = -c;
-  }
+	if (abs_j == 0) {
+		sin_a = s;
+		cos_a = c;
+	} else if (j == 1) {
+		sin_a = c;
+		cos_a = -s;
+	} else if (j == -1) {
+		sin_a = -c;
+		cos_a = s;
+	} else {
+		sin_a = -s;
+		cos_a = -c;
+	}
 
 }
 
 qd_real atan(const qd_real &a) {
-  return atan2(a, qd_real(1.0));
+	return atan2(a, qd_real(1.0));
 }
 
 qd_real atan2(const qd_real &y, const qd_real &x) {
@@ -1861,214 +1869,214 @@ qd_real atan2(const qd_real &y, const qd_real &x) {
      denominator is larger.  Otherwise, the second is used.
   */
 
-  if (x.is_zero()) {
-    
-    if (y.is_zero()) {
-      /* Both x and y is zero. */
-      qd_real::error("(qd_real::atan2): Both arguments zero.");
-      return qd_real::_nan;
-    }
+	if (x.is_zero()) {
+		
+		if (y.is_zero()) {
+			/* Both x and y is zero. */
+			qd_real::error("(qd_real::atan2): Both arguments zero.");
+			return qd_real::_nan;
+		}
 
-    return (y.is_positive()) ? qd_real::_pi2 : -qd_real::_pi2;
-  } else if (y.is_zero()) {
-    return (x.is_positive()) ? qd_real(0.0) : qd_real::_pi;
-  }
+		return (y.is_positive()) ? qd_real::_pi2 : -qd_real::_pi2;
+	} else if (y.is_zero()) {
+		return (x.is_positive()) ? qd_real(0.0) : qd_real::_pi;
+	}
 
-  if (x == y) {
-    return (y.is_positive()) ? qd_real::_pi4 : -qd_real::_3pi4;
-  }
+	if (x == y) {
+		return (y.is_positive()) ? qd_real::_pi4 : -qd_real::_3pi4;
+	}
 
-  if (x == -y) {
-    return (y.is_positive()) ? qd_real::_3pi4 : -qd_real::_pi4;
-  }
+	if (x == -y) {
+		return (y.is_positive()) ? qd_real::_3pi4 : -qd_real::_pi4;
+	}
 
-  qd_real r = sqrt(sqr(x) + sqr(y));
-  qd_real xx = x / r;
-  qd_real yy = y / r;
+	qd_real r = sqrt(sqr(x) + sqr(y));
+	qd_real xx = x / r;
+	qd_real yy = y / r;
 
-  /* Compute double precision approximation to atan. */
-  qd_real z = std::atan2(to_double(y), to_double(x));
-  qd_real sin_z, cos_z;
+	/* Compute double precision approximation to atan. */
+	qd_real z = std::atan2(to_double(y), to_double(x));
+	qd_real sin_z, cos_z;
 
-  if (std::abs(xx.x[0]) > std::abs(yy.x[0])) {
-    /* Use Newton iteration 1.  z' = z + (y - sin(z)) / cos(z)  */
-    sincos(z, sin_z, cos_z);
-    z += (yy - sin_z) / cos_z;
-    sincos(z, sin_z, cos_z);
-    z += (yy - sin_z) / cos_z;
-    sincos(z, sin_z, cos_z);
-    z += (yy - sin_z) / cos_z;
-  } else {
-    /* Use Newton iteration 2.  z' = z - (x - cos(z)) / sin(z)  */
-    sincos(z, sin_z, cos_z);
-    z -= (xx - cos_z) / sin_z;
-    sincos(z, sin_z, cos_z);
-    z -= (xx - cos_z) / sin_z;
-    sincos(z, sin_z, cos_z);
-    z -= (xx - cos_z) / sin_z;
-  }
+	if (std::abs(xx.x[0]) > std::abs(yy.x[0])) {
+		/* Use Newton iteration 1.  z' = z + (y - sin(z)) / cos(z)  */
+		sincos(z, sin_z, cos_z);
+		z += (yy - sin_z) / cos_z;
+		sincos(z, sin_z, cos_z);
+		z += (yy - sin_z) / cos_z;
+		sincos(z, sin_z, cos_z);
+		z += (yy - sin_z) / cos_z;
+	} else {
+		/* Use Newton iteration 2.  z' = z - (x - cos(z)) / sin(z)  */
+		sincos(z, sin_z, cos_z);
+		z -= (xx - cos_z) / sin_z;
+		sincos(z, sin_z, cos_z);
+		z -= (xx - cos_z) / sin_z;
+		sincos(z, sin_z, cos_z);
+		z -= (xx - cos_z) / sin_z;
+	}
 
-  return z;
+	return z;
 }
 
 
 qd_real drem(const qd_real &a, const qd_real &b) {
-  qd_real n = nint(a/b);
-  return (a - n * b);
+	qd_real n = nint(a/b);
+	return (a - n * b);
 }
 
 qd_real divrem(const qd_real &a, const qd_real &b, qd_real &r) {
-  qd_real n = nint(a/b);
-  r = a - n * b;
-  return n;
+	qd_real n = nint(a/b);
+	r = a - n * b;
+	return n;
 }
 
 qd_real tan(const qd_real &a) {
-  qd_real s, c;
-  sincos(a, s, c);
-  return s/c;
+	qd_real s, c;
+	sincos(a, s, c);
+	return s/c;
 }
 
 qd_real asin(const qd_real &a) {
-  qd_real abs_a = abs(a);
+	qd_real abs_a = abs(a);
 
-  if (abs_a > 1.0) {
-    qd_real::error("(qd_real::asin): Argument out of domain.");
-    return qd_real::_nan;
-  }
+	if (abs_a > 1.0) {
+		qd_real::error("(qd_real::asin): Argument out of domain.");
+		return qd_real::_nan;
+	}
 
-  if (abs_a.is_one()) {
-    return (a.is_positive()) ? qd_real::_pi2 : -qd_real::_pi2;
-  }
+	if (abs_a.is_one()) {
+		return (a.is_positive()) ? qd_real::_pi2 : -qd_real::_pi2;
+	}
 
-  return atan2(a, sqrt(1.0 - sqr(a)));
+	return atan2(a, sqrt(1.0 - sqr(a)));
 }
 
 qd_real acos(const qd_real &a) {
-  qd_real abs_a = abs(a);
+	qd_real abs_a = abs(a);
 
-  if (abs_a > 1.0) {
-    qd_real::error("(qd_real::acos): Argument out of domain.");
-    return qd_real::_nan;
-  }
+	if (abs_a > 1.0) {
+		qd_real::error("(qd_real::acos): Argument out of domain.");
+		return qd_real::_nan;
+	}
 
-  if (abs_a.is_one()) {
-    return (a.is_positive()) ? qd_real(0.0) : qd_real::_pi;
-  }
+	if (abs_a.is_one()) {
+		return (a.is_positive()) ? qd_real(0.0) : qd_real::_pi;
+	}
 
-  return atan2(sqrt(1.0 - sqr(a)), a);
+	return atan2(sqrt(1.0 - sqr(a)), a);
 }
  
 qd_real sinh(const qd_real &a) {
-  if (a.is_zero()) {
-    return 0.0;
-  }
+	if (a.is_zero()) {
+		return 0.0;
+	}
 
-  if (abs(a) > 0.05) {
-    qd_real ea = exp(a);
-    return mul_pwr2(ea - inv(ea), 0.5);
-  }
+	if (abs(a) > 0.05) {
+		qd_real ea = exp(a);
+		return mul_pwr2(ea - inv(ea), 0.5);
+	}
 
   /* Since a is small, using the above formula gives
      a lot of cancellation.   So use Taylor series. */
-  qd_real s = a;
-  qd_real t = a;
-  qd_real r = sqr(t);
-  double m = 1.0;
-  double thresh = std::abs(to_double(a) * qd_real::_eps);
+	qd_real s = a;
+	qd_real t = a;
+	qd_real r = sqr(t);
+	double m = 1.0;
+	double thresh = std::abs(to_double(a) * qd_real::_eps);
 
-  do {
-    m += 2.0;
-    t *= r;
-    t /= (m-1) * m;
+	do {
+		m += 2.0;
+		t *= r;
+		t /= (m-1) * m;
 
-    s += t;
-  } while (abs(t) > thresh);
+		s += t;
+	} while (abs(t) > thresh);
 
-  return s;
+	return s;
 }
 
 qd_real cosh(const qd_real &a) {
-  if (a.is_zero()) {
-    return 1.0;
-  }
+	if (a.is_zero()) {
+		return 1.0;
+	}
 
-  qd_real ea = exp(a);
-  return mul_pwr2(ea + inv(ea), 0.5);
+	qd_real ea = exp(a);
+	return mul_pwr2(ea + inv(ea), 0.5);
 }
 
 qd_real tanh(const qd_real &a) {
-  if (a.is_zero()) {
-    return 0.0;
-  }
+	if (a.is_zero()) {
+		return 0.0;
+	}
 
-  if (std::abs(to_double(a)) > 0.05) {
-    qd_real ea = exp(a);
-    qd_real inv_ea = inv(ea);
-    return (ea - inv_ea) / (ea + inv_ea);
-  } else {
-    qd_real s, c;
-    s = sinh(a);
-    c = sqrt(1.0 + sqr(s));
-    return s / c;
-  }
+	if (std::abs(to_double(a)) > 0.05) {
+		qd_real ea = exp(a);
+		qd_real inv_ea = inv(ea);
+		return (ea - inv_ea) / (ea + inv_ea);
+	} else {
+		qd_real s, c;
+		s = sinh(a);
+		c = sqrt(1.0 + sqr(s));
+		return s / c;
+	}
 }
 
 void sincosh(const qd_real &a, qd_real &s, qd_real &c) {
-  if (std::abs(to_double(a)) <= 0.05) {
-    s = sinh(a);
-    c = sqrt(1.0 + sqr(s));
-  } else {
-    qd_real ea = exp(a);
-    qd_real inv_ea = inv(ea);
-    s = mul_pwr2(ea - inv_ea, 0.5);
-    c = mul_pwr2(ea + inv_ea, 0.5);
-  }
+	if (std::abs(to_double(a)) <= 0.05) {
+		s = sinh(a);
+		c = sqrt(1.0 + sqr(s));
+	} else {
+		qd_real ea = exp(a);
+		qd_real inv_ea = inv(ea);
+		s = mul_pwr2(ea - inv_ea, 0.5);
+		c = mul_pwr2(ea + inv_ea, 0.5);
+	}
 }
 
 qd_real asinh(const qd_real &a) {
-  return log(a + sqrt(sqr(a) + 1.0));
+	return log(a + sqrt(sqr(a) + 1.0));
 }
 
 qd_real acosh(const qd_real &a) {
-  if (a < 1.0) {
-    qd_real::error("(qd_real::acosh): Argument out of domain.");
-    return qd_real::_nan;
-  }
+	if (a < 1.0) {
+		qd_real::error("(qd_real::acosh): Argument out of domain.");
+		return qd_real::_nan;
+	}
 
-  return log(a + sqrt(sqr(a) - 1.0));
+	return log(a + sqrt(sqr(a) - 1.0));
 }
 
 qd_real atanh(const qd_real &a) {
-  if (abs(a) >= 1.0) {
-    qd_real::error("(qd_real::atanh): Argument out of domain.");
-    return qd_real::_nan;
-  }
+	if (abs(a) >= 1.0) {
+		qd_real::error("(qd_real::atanh): Argument out of domain.");
+		return qd_real::_nan;
+	}
 
-  return mul_pwr2(log((1.0 + a) / (1.0 - a)), 0.5);
+	return mul_pwr2(log((1.0 + a) / (1.0 - a)), 0.5);
 }
 
 QD_API qd_real fmod(const qd_real &a, const qd_real &b) {
-  qd_real n = aint(a / b);
-  return (a - b * n);
+	qd_real n = aint(a / b);
+	return (a - b * n);
 }
 
 QD_API qd_real qdrand() {
-  static const double m_const = 4.6566128730773926e-10;  /* = 2^{-31} */
-  double m = m_const;
-  qd_real r = 0.0;
-  double d;
+	static const double m_const = 4.6566128730773926e-10;	/* = 2^{-31} */
+	double m = m_const;
+	qd_real r = 0.0;
+	double d;
 
   /* Strategy:  Generate 31 bits at a time, using lrand48 
      random number generator.  Shift the bits, and repeat
      7 times. */
 
-  for (int i = 0; i < 7; i++, m *= m_const) {
-    d = std::rand() * m;
-    r += d;
-  }
+	for (int i = 0; i < 7; i++, m *= m_const) {
+		d = std::rand() * m;
+		r += d;
+	}
 
-  return r;
+	return r;
 }
 
 
@@ -2076,15 +2084,15 @@ QD_API qd_real qdrand() {
    Evaluates the given n-th degree polynomial at x.
    The polynomial is given by the array of (n+1) coefficients. */
 qd_real polyeval(const qd_real *c, int n, const qd_real &x) {
-  /* Just use Horner's method of polynomial evaluation. */
-  qd_real r = c[n];
-  
-  for (int i = n-1; i >= 0; i--) {
-    r *= x;
-    r += c[i];
-  }
+	/* Just use Horner's method of polynomial evaluation. */
+	qd_real r = c[n];
+	
+	for (int i = n-1; i >= 0; i--) {
+		r *= x;
+		r += c[i];
+	}
 
-  return r;
+	return r;
 }
 
 /* polyroot(c, n, x0)
@@ -2092,57 +2100,57 @@ qd_real polyeval(const qd_real *c, int n, const qd_real &x) {
    the given guess x0.  Note that this uses simple Newton
    iteration scheme, and does not work for multiple roots.  */
 QD_API qd_real polyroot(const qd_real *c, int n, 
-    const qd_real &x0, int max_iter, double thresh) {
-  qd_real x = x0;
-  qd_real f;
-  qd_real *d = new qd_real[n];
-  bool conv = false;
-  int i;
-  double max_c = std::abs(to_double(c[0]));
-  double v;
+						const qd_real &x0, int max_iter, double thresh) {
+	qd_real x = x0;
+	qd_real f;
+	qd_real *d = new qd_real[n];
+	bool conv = false;
+	int i;
+	double max_c = std::abs(to_double(c[0]));
+	double v;
 
-  if (thresh == 0.0) thresh = qd_real::_eps;
+	if (thresh == 0.0) thresh = qd_real::_eps;
 
-  /* Compute the coefficients of the derivatives. */
-  for (i = 1; i <= n; i++) {
-    v = std::abs(to_double(c[i]));
-    if (v > max_c) max_c = v;
-    d[i-1] = c[i] * static_cast<double>(i);
-  }
-  thresh *= max_c;
+	/* Compute the coefficients of the derivatives. */
+	for (i = 1; i <= n; i++) {
+		v = std::abs(to_double(c[i]));
+		if (v > max_c) max_c = v;
+		d[i-1] = c[i] * static_cast<double>(i);
+	}
+	thresh *= max_c;
 
-  /* Newton iteration. */
-  for (i = 0; i < max_iter; i++) {
-    f = polyeval(c, n, x);
+	/* Newton iteration. */
+	for (i = 0; i < max_iter; i++) {
+		f = polyeval(c, n, x);
 
-    if (abs(f) < thresh) {
-      conv = true;
-      break;
-    }
-    x -= (f / polyeval(d, n-1, x));
-  }
-  delete [] d;
+		if (abs(f) < thresh) {
+			conv = true;
+			break;
+		}
+		x -= (f / polyeval(d, n-1, x));
+	}
+	delete [] d;
 
-  if (!conv) {
-    qd_real::error("(qd_real::polyroot): Failed to converge.");
-    return qd_real::_nan;
-  }
+	if (!conv) {
+		qd_real::error("(qd_real::polyroot): Failed to converge.");
+		return qd_real::_nan;
+	}
 
-  return x;
+	return x;
 }
 
 qd_real qd_real::debug_rand() {
-  if (std::rand() % 2 == 0)
-    return qdrand();
-
-  int expn = 0;
-  qd_real a = 0.0;
-  double d;
-  for (int i = 0; i < 4; i++) {
-    d = std::ldexp(std::rand() / static_cast<double>(RAND_MAX), -expn);
-    a += d;
-    expn = expn + 54 + std::rand() % 200;
-  }
-  return a;
+	if (std::rand() % 2 == 0) {
+		return qdrand();
+	}
+	int expn = 0;
+	qd_real a = 0.0;
+	double d;
+	for (int i = 0; i < 4; i++) {
+		d = std::ldexp(std::rand() / static_cast<double>(RAND_MAX), -expn);
+		a += d;
+		expn = expn + 54 + std::rand() % 200;
+	}
+	return a;
 }
 
