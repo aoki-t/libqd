@@ -48,31 +48,31 @@ void fpu_fix_start(unsigned int *old_cw) {
 #ifdef X86
 #ifdef _WIN32
 #ifdef __BORLANDC__
-  /* Win 32 Borland C */
-  unsigned short cw = _control87(0, 0);
-  _control87(0x0200, 0x0300);
-  if (old_cw) {
-    *old_cw = cw;
-  }
+	/* Win 32 Borland C */
+	unsigned short cw = _control87(0, 0);
+	_control87(0x0200, 0x0300);
+	if (old_cw) {
+		*old_cw = cw;
+	}
 #else
-  /* Win 32 MSVC */
-  unsigned int cw = _control87(0, 0);
-  _control87(0x00010000, 0x00030000);
-  if (old_cw) {
-    *old_cw = cw;
-  }
+	/* Win 32 MSVC */
+	unsigned int cw = _control87(0, 0);
+	_control87(0x00010000, 0x00030000);
+	if (old_cw) {
+		*old_cw = cw;
+	}
 #endif
 #else
-  /* Linux */
-  volatile unsigned short cw, new_cw;
-  _FPU_GETCW(cw);
+	/* Linux */
+	volatile unsigned short cw, new_cw;
+	_FPU_GETCW(cw);
 
-  new_cw = (cw & ~_FPU_EXTENDED) | _FPU_DOUBLE;
-  _FPU_SETCW(new_cw);
-  
-  if (old_cw) {
-    *old_cw = cw;
-  }
+	new_cw = (cw & ~_FPU_EXTENDED) | _FPU_DOUBLE;
+	_FPU_SETCW(new_cw);
+	
+	if (old_cw) {
+		*old_cw = cw;
+	}
 #endif
 #endif
 }
@@ -82,25 +82,25 @@ void fpu_fix_end(unsigned int *old_cw) {
 #ifdef _WIN32
 
 #ifdef __BORLANDC__
-  /* Win 32 Borland C */
-  if (old_cw) {
-    unsigned short cw = (unsigned short) *old_cw;
-    _control87(cw, 0xFFFF);
-  }
+	/* Win 32 Borland C */
+	if (old_cw) {
+		unsigned short cw = (unsigned short) *old_cw;
+		_control87(cw, 0xFFFF);
+	}
 #else
-  /* Win 32 MSVC */
-  if (old_cw) {
-    _control87(*old_cw, 0xFFFFFFFF);
-  }
+	/* Win 32 MSVC */
+	if (old_cw) {
+		_control87(*old_cw, 0xFFFFFFFF);
+	}
 #endif
 
 #else
-  /* Linux */
-  if (old_cw) {
-    int cw;
-    cw = *old_cw;
-    _FPU_SETCW(cw);
-  }
+	/* Linux */
+	if (old_cw) {
+		int cw;
+		cw = *old_cw;
+		_FPU_SETCW(cw);
+	}
 #endif
 #endif
 }
@@ -108,17 +108,17 @@ void fpu_fix_end(unsigned int *old_cw) {
 #ifdef HAVE_FORTRAN
 
 #define f_fpu_fix_start FC_FUNC_(f_fpu_fix_start, F_FPU_FIX_START)
-#define f_fpu_fix_end   FC_FUNC_(f_fpu_fix_end,   F_FPU_FIX_END)
+#define f_fpu_fix_end	 FC_FUNC_(f_fpu_fix_end,	 F_FPU_FIX_END)
 
 void f_fpu_fix_start(unsigned int *old_cw) {
-  fpu_fix_start(old_cw);
+	fpu_fix_start(old_cw);
 }
 
 void f_fpu_fix_end(unsigned int *old_cw) {
-  fpu_fix_end(old_cw);
+	fpu_fix_end(old_cw);
 }
 
 #endif
 
 }
- 
+
