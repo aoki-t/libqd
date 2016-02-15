@@ -58,6 +58,7 @@ public:
   bool test10();
   bool test11();
   bool test12();
+  bool test13();
   bool testall();
 };
 
@@ -623,6 +624,41 @@ bool TestSuite<T>::test12() {
 	
 }
 
+template <class T>
+bool TestSuite<T>::test13() {
+	cout << endl;
+	cout << "Test 13.  eps value check." << endl;
+	cout.precision(T::_ndigits);
+	bool status = false;
+	union trans{
+		unsigned __int64 asInt64;
+		double asDouble;
+	};
+	unsigned __int64 dd_eps = 0x3970000000000000ULL;	// 2^-104
+	unsigned __int64 qd_eps = 0x32e0000000000000ULL;	// 2^-209
+
+	trans dd_t, qd_t;
+	dd_t.asDouble = dd_real::_eps;
+	qd_t.asDouble = qd_real::_eps;
+
+	int digits = T::_ndigits;
+	if (digits > 60) {
+		if (qd_t.asInt64 != qd_eps) {
+			cout << "eps of qd_real incorrect " << std::hex << qd_t.asInt64 << " expect(0x32e0000000000000)" << endl;
+		} else {
+			cout << "eps of qd_real correct " << std::hex << qd_t.asInt64 << endl;
+			status = true;
+		}
+	} else {
+		if (dd_t.asInt64 != dd_eps) {
+			cout << "eps of dd_real incorrect " << std::hex << dd_t.asInt64 << " expect(0x3970000000000000)" << endl;
+		} else {
+			cout << "eps of dd_real correct " << std::hex << dd_t.asInt64 << endl;
+			status = true;
+		}
+	}
+	return status;
+}
 
 template <class T>
 bool TestSuite<T>::testall() {
@@ -639,6 +675,7 @@ bool TestSuite<T>::testall() {
   pass &= print_result(test10());
   pass &= print_result(test11());
   pass &= print_result(test12());
+  pass &= print_result(test13());
   return pass;
 }
 
