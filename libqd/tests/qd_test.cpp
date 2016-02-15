@@ -554,7 +554,7 @@ bool TestSuite<T>::test11() {
 		cout << endl;
 
 		if ( abs(t3-ONE) > t3*dd_real::_eps ){
-			flag = false
+			flag = false;
 		}
 
 		dd_base = dd_base / dd_ten;
