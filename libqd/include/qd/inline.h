@@ -25,6 +25,7 @@
 
 #include <cmath>
 #include <limits>
+#include <intrin.h> 	
 
 namespace qd {
 
@@ -63,6 +64,9 @@ inline double two_diff(double a, double b, double &err) {
 }
 
 inline double fma(double *a, double *b, double *c){
+#if _MSC_VER >= 1900
+	return std::fma(*a, *b, *c);
+#else
 	double r;
 	__m128d x = _mm_load_sd((const double*)a);
 	__m128d y = _mm_load_sd((const double*)b);
@@ -70,9 +74,13 @@ inline double fma(double *a, double *b, double *c){
 	__m128d d = _mm_fmadd_sd(x, y, z);
 	_mm_store_sd(&r, d);
 	return r;
+#endif
 }
 
 inline double fms(double *a, double *b, double *c){
+#if _MSC_VER >= 1900
+	return std::fma(*a, *b, -(*c));
+#else
 	double r;
 	__m128d x = _mm_load_sd((const double*)a);
 	__m128d y = _mm_load_sd((const double*)b);
@@ -80,6 +88,7 @@ inline double fms(double *a, double *b, double *c){
 	__m128d d = _mm_fmsub_sd(x, y, z);
 	_mm_store_sd(&r, d);
 	return r;
+#endif
 }
 
 #ifndef QD_FMS

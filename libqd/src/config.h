@@ -121,13 +121,13 @@
 
 /* If fused multiply-add is available, define correct macro for using it. */
 /* #undef QD_FMA */
-#ifdef __AVX2__
+#if _MSC_VER >= 1900
 #define QD_FMA(a, b, c) fma(&a, &b, &c)
 #endif
 
 /* If fused multiply-subtract is available, define correct macro for using it.  */
 /* #undef QD_FMS */
-#ifdef __AVX2__
+#if _MSC_VER >= 1900
 #define QD_FMS(a, b, c) fms(&a, &b, &c)
 #endif
 
