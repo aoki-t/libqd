@@ -65,7 +65,7 @@ void print_double_info(std::ostream &os, double x) {
 		x = std::abs(x);
 		int expn = get_double_expn(x);
 		double d = std::ldexp(1.0, expn);
-		os << setw(5) << expn << " ";
+		os << setw(5) << std::dec << expn << " ";
 		for (int i = 0; i < 53; i++) {
 			if (x >= d) {
 				x -= d;
