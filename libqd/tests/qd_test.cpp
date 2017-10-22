@@ -17,6 +17,9 @@
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
+#include <string>
+#include <windows.h>
+
 #include <qd/qd_real.h>
 #include <qd/fpu.h>
 
@@ -59,6 +62,10 @@ public:
   bool test11();
   bool test12();
   bool test13();
+  bool test14();
+  bool test15();
+  bool test16();
+  bool test17();
   bool testall();
 };
 
@@ -661,6 +668,593 @@ bool TestSuite<T>::test13() {
 }
 
 template <class T>
+T sinhx2(const T &a) {
+	T ea = exp(a);
+	return mul_pwr2(ea - inv(ea), 0.5);
+
+}
+
+template <class T>
+T sinhx3(const T &a) {
+	T s = a;
+	T t = a;
+	T r = sqr(t);
+	double m = 1.0;
+	double thresh = std::abs(to_double(a) * T::_eps);
+
+	do {
+		m += 2.0;
+		t *= r;
+		t /= (m - 1) * m;
+
+		s += t;
+	} while (abs(t) > thresh);
+
+	return s;
+
+}
+
+
+template <class T>
+bool TestSuite<T>::test14() {
+	cout << endl;
+	cout << "Test 14.  sinh(x) check." << endl;
+	cout.precision(T::_ndigits);
+
+
+
+	int digits = T::_ndigits;
+	if (digits > 60) {
+		cout.precision(qd_real::_ndigits);
+		
+		qd_real r2, r3;
+		qd_real a(1.0);
+		a *= qd_real::_pi;
+		qd_real n(2.0);
+
+		for (int i = 0; i < 10; i++) {
+			r2 = sinhx2(a);
+			r3 = sinhx3(a);
+
+			cout << " a=" << a << endl;
+			cout << "r2=" << r2 << endl;
+			cout << "r3=" << r3 << endl;
+
+			showdiff(r2.x[3], r3.x[3]);
+			std::cout << endl;
+
+			a /= n;
+		}
+		return (r2 == r3);
+
+
+	} else {
+		cout.precision(dd_real::_ndigits);
+
+		dd_real r2, r3;
+		dd_real a(1.0);
+		a *= dd_real::_pi;
+		dd_real n(2.0);
+
+		for (int i = 0; i < 10; i++) {
+			r2 = sinhx2(a);
+			r3 = sinhx3(a);
+
+			cout << " a=" << a << endl;
+			cout << "r2=" << r2 << endl;
+			cout << "r3=" << r3 << endl;
+
+			showdiff(r2.x[1], r3.x[1]);
+			std::cout << endl;
+
+			a /= n;
+		}
+		return (r2 == r3);
+
+	}
+
+
+
+}
+
+inline dd_real sqr2(const dd_real &a) {
+	double p1, p2, t;
+	double s1, s2;
+	p1 = qd::two_sqr(a.x[0], t);
+	p2 = a.x[1] * a.x[1];
+	p2 += 2.0 * a.x[0] * a.x[1];
+	p2 += t;
+	s1 = qd::quick_two_sum(p1, p2, s2);
+	return dd_real(s1, s2);
+}
+
+
+void showdiff(double a, double b) { 
+	unsigned __int64 diff, mask;
+	int cnt=0;
+	union trans {
+		unsigned __int64 asInt64;
+		double asDouble;
+	};
+	trans aa, bb;
+	aa.asDouble = a;
+	bb.asDouble = b;
+	if (aa.asInt64 > bb.asInt64) {
+		diff = aa.asInt64 - bb.asInt64;
+	} else {
+		diff = bb.asInt64 - aa.asInt64;
+	}
+	mask = 0xffffffffffffffffULL;
+	for (int j = 0; j < 53; j++) {
+		if ((aa.asInt64 & mask) == (bb.asInt64 & mask)) {
+			cnt = j;
+			break;
+		}
+		mask = mask << 1;
+	}
+	cout << "diff=" << std::dec << diff << " ulps(" << cnt << "bits)" << endl;
+
+}
+
+template <class T>
+bool TestSuite<T>::test15() {
+	cout << endl;
+	cout << "Test 15.  sqr(x) acuracy check." << endl;
+	cout.precision(T::_ndigits);
+
+
+
+	int digits = T::_ndigits;
+	if (digits > 60) {
+		cout.precision(qd_real::_ndigits);
+		//qd_real r0, r1, r2;
+		//qd_real a = qd_real::_pi;
+
+
+		//r0 = a * a;
+		//r1 = sqr(a);
+		//r2 = sqr2(a);
+
+		//cout << "   a*a =" << r0 << endl;
+		//cout << " sqr(a)=" << r1 << endl;
+		//cout << "sqr2(a)=" << r2 << endl;
+
+
+		//showdiff(r0.x[3], r1.x[3]);
+		//showdiff(r0.x[3], r2.x[3]);
+		//std::cout << endl;
+
+		//return (r2 == r1);
+		return true;
+
+
+	} else {
+		cout.precision(dd_real::_ndigits);
+
+		dd_real r0, r1, r2;
+		dd_real a = dd_real::_pi;
+
+
+		r0 = a * a;
+		r1 = sqr(a);
+		r2 = sqr2(a);
+
+		cout << "   a*a =" << r0 << endl;
+		cout << " sqr(a)=" << r1 << endl;
+		cout << "sqr2(a)=" << r2 << endl;
+
+		showdiff(r0.x[1], r1.x[1]);
+		showdiff(r0.x[1], r2.x[1]);
+		std::cout << endl;
+
+		return (r2 == r1);
+
+	}
+}
+
+inline dd_real fast_div(const dd_real &a, const dd_real &b) {
+/*
+	yamanaka, ohishi
+	Zh + Zl near= (Ah + Al) / (Bh + Bl)
+	            = Ah(1 + Al / Ah) / Bh(1 + Bl / Bh)
+	            = (Ah / Bh)(1 + Al / Ah - Bl / Bh) (approx)
+*/
+	double zh, zl;
+	double th, tl, br, cr;
+
+	cr = 1.0 / b.x[0];
+	br = b.x[1] * cr;
+
+	zh = a.x[0] * cr;
+	th = qd::two_prod(zh, b.x[0], tl);
+	zl = ((a.x[0] - th) - tl) * cr + zh *(a.x[1] / a.x[0] - br);
+	zh = qd::quick_two_sum(zh, zl, zl);
+	return dd_real(zh, zl);
+}
+
+inline dd_real fast_sqrt(const dd_real &a) {
+/*
+	yamanaka, ohishi
+	sqrt(Ah + Al) = sqrt(Ah * (1 + (Al / Ah)))
+	              = sqrt(Ah) * (1 + (Al / Ah) * 0.5) (approx)
+	
+*/
+	double th, tl;
+	double app = std::sqrt(a.x[0]);
+	dd_real r;
+	th = qd::two_sqr(app, tl);
+	r.x[1] = 0.5 * (((a.x[0]-th)-tl)+a.x[1]) / app;
+	r.x[0] = qd::quick_two_sum(app, r.x[1], r.x[1]);
+	return r;
+}
+
+qd_real qd_fast_sqrt(const qd_real &a) {
+	/* Strategy:
+	Perform the following Newton iteration:
+
+	x' = x + (1 - a * x^2) * x / 2;
+
+	which converges to 1/sqrt(a), starting with the
+	double precision approximation to 1/sqrt(a).
+	Since Newton's iteration more or less doubles the
+	number of correct digits, we only need to perform it
+	twice.
+	*/
+
+	if (a.is_zero()) {
+		return a;
+	}
+
+	if (a.is_negative()) {
+		qd_real::error("(qd_real::sqrt): Negative argument.");
+		return qd_real::_nan;
+	}
+
+	if (a.isinf()) {
+		return a;
+	}
+
+	//qd_real r = (1.0 / std::sqrt(a[0]));
+	qd_real r = qd_real(1.0) / fast_sqrt(dd_real(a[0], a[1]));
+	qd_real h = mul_pwr2(a, 0.5);
+
+	r += ((0.5 - h * sqr(r)) * r);
+	r += ((0.5 - h * sqr(r)) * r);
+//	r += ((0.5 - h * sqr(r)) * r);
+
+	r *= a;
+	return r;
+}
+
+inline dd_real ieee_sub(const dd_real &a, const dd_real &b) {
+	/* This one satisfies IEEE style error bound,
+	due to K. Briggs and W. Kahan.                   */
+	double s1, s2, t1, t2;
+
+	s1 = qd::two_sum(a.x[0], -(b.x[0]), s2);
+	t1 = qd::two_sum(a.x[1], -(b.x[1]), t2);
+	s2 += t1;
+	s1 = qd::quick_two_sum(s1, s2, s2);
+	s2 += t2;
+	s1 = qd::quick_two_sum(s1, s2, s2);
+	return dd_real(s1, s2);
+}
+
+
+class Qtimer {
+private:
+	LARGE_INTEGER _freq, _st, _ed;
+	unsigned __int64 st_clk, ed_clk;
+public:
+	double result;
+	unsigned __int64 clk_total;
+	unsigned int ui;
+
+	Qtimer() {
+		SetThreadAffinityMask(GetCurrentThread(), 0x1);
+		if (!QueryPerformanceFrequency(&_freq)) {
+			std::cout << "Not supported Precise counter." << std::endl;
+		}
+	}
+
+	~Qtimer() { };
+
+	void start() {
+		SetThreadAffinityMask(GetCurrentThread(), 0x1);
+		QueryPerformanceCounter(&_st);
+		st_clk = __rdtscp(&ui);
+	}
+
+	void stop(std::string str="") {
+		ed_clk = __rdtscp(&ui);
+		QueryPerformanceCounter(&_ed);
+		clk_total = ed_clk - st_clk;
+		result = 1000.0 * (_ed.QuadPart - _st.QuadPart)/_freq.QuadPart;
+		
+		cout << str;
+		std::ios::fmtflags flags = cout.flags();
+		cout << std::fixed << std::setprecision(6);
+		std::cout << result << " ms  " << clk_total<< " clocks" << std::endl;
+		cout.flags(flags);
+	}
+
+};
+
+template <class T>
+bool TestSuite<T>::test16() {
+	cout << endl;
+	cout << "Test 16.  fast_div and fast_sqrt acuracy check." << endl;
+	cout.precision(T::_ndigits);
+
+
+
+	int digits = T::_ndigits;
+	if (digits > 60) {
+		cout.precision(qd_real::_ndigits);
+
+		qd_real r0, r1, r2;
+		qd_real a = qd_real::_pi;
+
+
+		r0 = a * a;
+		r1 = r0 / a;
+		//r2 = fast_div(r0, a);
+
+		cout << "              a =" <<  a << endl;
+		cout << "         r0 / a =" << r1 << endl;
+		//cout << "fast_div(r0, a) =" << r2 << endl;
+
+		showdiff(a.x[3], r1.x[3]);
+		//showdiff(tr0.asDouble[3], tr2.asDouble[3]);
+		std::cout << endl;
+
+		return (r2 == r1);
+
+
+	} else {
+		cout.precision(dd_real::_ndigits);
+
+
+		dd_real r0, r1, r2, r3, r4;
+		dd_real a = dd_real::_pi;
+		dd_real b(1.0);
+		dd_real c(10.0);
+
+		r0 = a * a;
+		r1 = r0 / a;
+		r2 = fast_div(r0, a);
+
+		r3 = b / c;
+		r4 = fast_div(b, c);
+
+		cout << "              a =" << a << endl;
+		cout << "         r0 / a =" << r1 << endl;
+		cout << "fast_div(r0, a) =" << r2 << endl;
+		showdiff(r1.x[1], r2.x[1]);
+		std::cout << endl;
+
+		cout << "         1 / 10 =" << r3 << endl;
+		cout << "fast_div(1, 10) =" << r4 << endl;
+		showdiff(r3.x[1], r4.x[1]);
+		std::cout << endl;
+
+		r1 = sqrt(r0);
+		r2 = fast_sqrt(r0);
+		cout << "                a =" << a << endl;
+		cout << "        sqrt(a^2) =" << r1 << endl;
+		cout << "fast_sqrt(a^2, a) =" << r2 << endl;
+		showdiff(a.x[1], r1.x[1]);
+		showdiff(a.x[1], r2.x[1]);
+		showdiff(r1.x[1], r2.x[1]);
+		std::cout << endl;
+
+		return (r2 == r1);
+
+	}
+}
+
+template <class T>
+bool TestSuite<T>::test17() {
+	cout << endl;
+	cout << "Test 17.  Basic function benchmark." << endl;
+	cout.precision(T::_ndigits);
+
+
+
+	cout.precision(dd_real::_ndigits);
+
+	int count = 1000;
+
+	double n_arry[1000];
+	double n_arry_r[1000];
+	for (int i = 0; i < count; ++i) {
+		n_arry[i] = rand();
+	}
+	double n_divider = 2.718281828459045091e+00;
+
+	dd_real d_arry[1000];
+	dd_real d_arry_r[1000];
+	for (int i = 0; i < count; ++i) {
+		d_arry[i] = ddrand();
+	}
+	dd_real d_divider = dd_real::_e;
+
+
+	qd_real q_arry[1000];
+	qd_real q_arry_r[1000];
+	for (int i = 0; i < count; ++i) {
+		q_arry[i] = qdrand();
+	}
+	qd_real q_divider = qd_real::_e;
+
+	Qtimer dd_add_t, dd_sub_t, dd_prod_t, dd_div_t, dd_sqrt_t;
+	Qtimer fast_sub_t, fast_div_t, fast_sqrt_t;
+	Qtimer qd_add_t, qd_sub_t, qd_prod_t, qd_div_t, qd_sqrt_t, qd_fast_sqrt_t;
+	Qtimer _add_t, _sub_t, _prod_t, _div_t, _sqrt_t;
+	SetThreadAffinityMask(GetCurrentThread(), 0x1);
+
+	dd_real r0, r1, r2, r3, r4;
+	dd_real da = dd_real::_pi;
+	qd_real qa = qd_real::_pi;
+	dd_real b(1.0);
+	dd_real c(10.0);
+
+
+
+	// add
+	_add_t.start();
+	for (int i = 0; i < count; ++i) {
+		n_arry_r[i] = n_arry[i] + n_divider;
+	}
+	_add_t.stop("native add time :");
+
+	dd_add_t.start();
+	for (int i = 0; i < count; ++i) {
+		d_arry_r[i] = d_arry[i] + d_divider;
+	}
+	dd_add_t.stop("    dd add time :");
+
+	qd_add_t.start();
+	for (int i = 0; i < count; ++i) {
+		q_arry_r[i] = q_arry[i] + q_divider;
+	}
+	qd_add_t.stop("    qd add time :");
+
+	cout << std::fixed << std::setprecision(1);
+	cout << "n_add : dd_add : qd_add = 1 : " << dd_add_t.result / _add_t.result << " : " << qd_add_t.result / _add_t.result << " time" << endl;
+	cout << "n_add : dd_add : qd_add = 1 : " << (double)dd_add_t.clk_total / _add_t.clk_total << " : " << (double)qd_add_t.clk_total / _add_t.clk_total << " clock" << endl;
+	cout << endl;
+
+	// sub
+	_sub_t.start();
+	for (int i = 0; i < count; ++i) {
+		n_arry_r[i] = n_arry[i] - n_divider;
+	}
+	_sub_t.stop("native sub time :");
+
+	dd_sub_t.start();
+	for (int i = 0; i < count; ++i) {
+		d_arry_r[i] = d_arry[i] - d_divider;
+	}
+	dd_sub_t.stop("    dd sub time :");
+
+	fast_sub_t.start();
+	for (int i = 0; i < count; ++i) {
+		d_arry_r[i] = ieee_sub(d_arry[i], d_divider);
+	}
+	fast_sub_t.stop("ddfast sub time :");
+
+	qd_sub_t.start();
+	for (int i = 0; i < count; ++i) {
+		q_arry_r[i] = q_arry[i] - q_divider;
+	}
+	qd_sub_t.stop("    qd sub time :");
+
+	cout << std::fixed << std::setprecision(1);
+	cout << "n_sub : dd_sub : fast_sub : qd_sub = 1 : " << dd_sub_t.result / _sub_t.result << " : " << fast_sub_t.result / _sub_t.result << " : " << qd_sub_t.result / _sub_t.result << " time" << endl;
+	cout << "n_sub : dd_sub : fast_sub : qd_sub = 1 : " << (double)dd_sub_t.clk_total / _sub_t.clk_total << " : " << (double)fast_sub_t.clk_total / _sub_t.clk_total << " : " << (double)qd_sub_t.clk_total / _sub_t.clk_total << " clock" << endl;
+	cout << endl;
+
+	// prod
+	_prod_t.start();
+	for (int i = 0; i < count; ++i) {
+		n_arry_r[i] = n_arry[i] * n_divider;
+	}
+	_prod_t.stop("native prod time :");
+
+	dd_prod_t.start();
+	for (int i = 0; i < count; ++i) {
+		d_arry_r[i] = d_arry[i] * d_divider;
+	}
+	dd_prod_t.stop("    dd prod time :");
+
+	qd_prod_t.start();
+	for (int i = 0; i < count; ++i) {
+		q_arry_r[i] = q_arry[i] * q_divider;
+	}
+	qd_prod_t.stop("    qd prod time :");
+
+	cout << std::fixed << std::setprecision(1);
+	cout << "n_prod : dd_prod : qd_prod = 1 : " << dd_prod_t.result / _prod_t.result << " : " << qd_prod_t.result / _prod_t.result << " time" << endl;
+	cout << "n_prod : dd_prod : qd_prod = 1 : " << (double)dd_prod_t.clk_total / _prod_t.clk_total << " : " << (double)qd_prod_t.clk_total / _prod_t.clk_total << " clock" << endl;
+	cout << endl;
+
+
+	// div
+	_div_t.start();
+	for (int i = 0; i < count; ++i) {
+		n_arry_r[i] = n_arry[i] / n_divider;
+	}
+	_div_t.stop("native div time :");
+
+	dd_div_t.start();
+	for (int i = 0; i < count; ++i) {
+		d_arry_r[i] = d_arry[i] / d_divider;
+	}
+	dd_div_t.stop("    dd div time :");
+
+	fast_div_t.start();
+	for (int i = 0; i < count; ++i) {
+		d_arry_r[i] = fast_div(d_arry[i], d_divider);
+	}
+	fast_div_t.stop("ddfast div time :");
+
+	qd_div_t.start();
+	for (int i = 0; i < count; ++i) {
+		q_arry_r[i] = q_arry[i] / q_divider;
+	}
+	qd_div_t.stop("    qd div time :");
+
+	cout << std::fixed << std::setprecision(1);
+	cout << "n_div : dd_div : fast_div : qd_div = 1 : " << dd_div_t.result / _div_t.result << " : " << fast_div_t.result / _div_t.result << " : "<< qd_div_t.result / _div_t.result << " time" << endl;
+	cout << "n_div : dd_div : fast_div : qd_div = 1 : " << (double)dd_div_t.clk_total / _div_t.clk_total << " : " << (double)fast_div_t.clk_total / _div_t.clk_total << " : "<< (double)qd_div_t.clk_total/ _div_t.clk_total << " clock" << endl;
+	cout << endl;
+
+
+	// sqrt
+	_sqrt_t.start();
+	for (int i = 0; i < count; ++i) {
+		n_arry_r[i] = std::sqrt(n_arry[i]);
+	}
+	_sqrt_t.stop("native sqrt time :");
+
+	dd_sqrt_t.start();
+	for (int i = 0; i < count; ++i) {
+		d_arry_r[i] = sqrt(d_arry[i]);
+	}
+	dd_sqrt_t.stop("    dd sqrt time :");
+
+	fast_sqrt_t.start();
+	for (int i = 0; i < count; ++i) {
+		d_arry_r[i] = fast_sqrt(d_arry[i]);
+	}
+	fast_sqrt_t.stop("ddfast sqrt time :");
+
+	qd_sqrt_t.start();
+	for (int i = 0; i < count; ++i) {
+		q_arry_r[i] = sqrt(q_arry[i]);
+	}
+	qd_sqrt_t.stop("    qd sqrt time :");
+
+	qd_fast_sqrt_t.start();
+	for (int i = 0; i < count; ++i) {
+		q_arry_r[i] = qd_fast_sqrt(q_arry[i]);
+	}
+	qd_fast_sqrt_t.stop("qd fastsqrt time :");
+
+
+	cout << std::fixed << std::setprecision(1);
+	cout << "n_sqrt : dd_sqrt : fast_sqrt : qd_sqrt : qd_fast_sqrt = 1 : " << dd_sqrt_t.result / _sqrt_t.result << " : " << fast_sqrt_t.result / _sqrt_t.result << " : " << qd_fast_sqrt_t.result / _sqrt_t.result << " : " << qd_sqrt_t.result / _sqrt_t.result << " time" << endl;
+	cout << "n_sqrt : dd_sqrt : fast_sqrt : qd_sqrt : qd_fast_sqrt = 1 : " << (double)dd_sqrt_t.clk_total / _sqrt_t.clk_total << " : " << (double)fast_sqrt_t.clk_total / _sqrt_t.clk_total << " : " << (double)qd_fast_sqrt_t.clk_total / _sqrt_t.clk_total << " : " << (double)qd_sqrt_t.clk_total/_sqrt_t.clk_total << " clock" << endl;
+	cout << endl;
+
+	return (r2 == r1);
+
+	
+}
+
+
+template <class T>
 bool TestSuite<T>::testall() {
   bool pass = true;
   pass &= print_result(test1());
@@ -676,6 +1270,10 @@ bool TestSuite<T>::testall() {
   pass &= print_result(test11());
   pass &= print_result(test12());
   pass &= print_result(test13());
+  pass &= print_result(test14());
+  pass &= print_result(test15());
+  pass &= print_result(test16());
+  pass &= print_result(test17());
   return pass;
 }
 
