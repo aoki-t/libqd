@@ -1145,6 +1145,8 @@ string dd_real::to_string(int precision, int width, ios_base::fmtflags fmt,
 					to_digits(t, e, d);
 				}
 
+				off = e + 1;
+
 				if (fixed) {
 					// fix the string if it's been computed incorrectly
 					// round here in the decimal string if required
