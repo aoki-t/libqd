@@ -22,7 +22,7 @@ const dd_real dd_real::_log10 = dd_real(2.302585092994045901e+00, -2.17075622338
 const dd_real dd_real::_nan = dd_real(qd::_d_nan, qd::_d_nan);
 const dd_real dd_real::_inf = dd_real(qd::_d_inf, qd::_d_inf);
 
-const double dd_real::_eps = 4.93038065763132e-32;  // 2^-104 (106-2)
+const double dd_real::_eps = 4.930380657631323783e-32;  // 2^-104 (106-2)
 const double dd_real::_min_normalized = 2.0041683600089728e-292;  // = 2^(-1022 + 53)
 
 //(2^53-1)*2^(1023-52), (2^53-1)*2^((1023-52)-54)

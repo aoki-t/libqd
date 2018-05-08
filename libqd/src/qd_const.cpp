@@ -50,7 +50,7 @@ const qd_real qd_real::_nan = qd_real(qd::_d_nan, qd::_d_nan,
 const qd_real qd_real::_inf = qd_real(qd::_d_inf, qd::_d_inf, 
                                       qd::_d_inf, qd::_d_inf);
 
-const double qd_real::_eps = 1.21543267145725e-63; // = 2^-209 (212-3)
+const double qd_real::_eps = 1.215432671457254239e-63; // = 2^-209 (212-3)
 const double qd_real::_min_normalized = 1.6259745436952323e-260; // = 2^(-1022 + 3*53)
 
 const qd_real qd_real::_max = qd_real(
