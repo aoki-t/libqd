@@ -57,12 +57,16 @@ QD_API dd_real sqrt(const dd_real &a) {
   */
 
 	if (a.is_zero()) {
-		return 0.0;
+		return a;
 	}
 
 	if (a.is_negative()) {
 		dd_real::error("(dd_real::sqrt): Negative argument.");
 		return dd_real::_nan;
+	}
+
+	if (a.isinf()) {
+		return a;
 	}
 
 	double x = 1.0 / std::sqrt(a.x[0]);
@@ -265,6 +269,10 @@ dd_real log(const dd_real &a) {
      Only one iteration is needed, since Newton's iteration
      approximately doubles the number of digits per iteration. */
 
+	if (a.is_zero()) {
+		return -(dd_real::_inf);
+	}
+
 	if (a.is_one()) {
 		return 0.0;
 	}
@@ -274,6 +282,10 @@ dd_real log(const dd_real &a) {
 		return dd_real::_nan;
 	}
 
+	if (isinf(a) && a.is_positive()) {
+		return dd_real::_inf;
+	}
+
 	dd_real x = std::log(a.x[0]);	 /* Initial approximation */
 
 	x = x + a * exp(-x) - 1.0;
@@ -281,6 +293,23 @@ dd_real log(const dd_real &a) {
 }
 
 dd_real log10(const dd_real &a) {
+	if (a.is_zero()) {
+		return -(dd_real::_inf);
+	}
+
+	if (a.is_one()) {
+		return 0.0;
+	}
+
+	if (a.x[0] <= 0.0) {
+		dd_real::error("(dd_real::log): Non-positive argument.");
+		return dd_real::_nan;
+	}
+
+	if (isinf(a) && a.is_positive()) {
+		return dd_real::_inf;
+	}
+
 	return log(a) / dd_real::_log10;
 }
 
