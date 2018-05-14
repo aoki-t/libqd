@@ -1028,7 +1028,6 @@ qd_real log(const qd_real &a) {
 		return qd_real::_inf;
 	}
 
-
 	qd_real x = std::log(a[0]);	 /* Initial approximation */
 
 	x = x + a * exp(-x) - 1.0;
