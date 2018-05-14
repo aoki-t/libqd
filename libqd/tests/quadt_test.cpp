@@ -16,6 +16,7 @@
 #include <cstdio>
 #include <iostream>
 
+#include <string.h>
 #include <qd/fpu.h>
 #include <qd/qd_real.h>
 
@@ -407,7 +408,7 @@ int main(int argc, char **argv) {
   /* Parse the command-line flags. */
   for (int i = 1; i < argc; i++) {
     arg = argv[i];
-    if (strcmp(arg, "-h") == 0 || strcmp(arg, "-help") == 0) {
+    if (strcmp(arg, "-h") == 0 || strcmp(arg, "--help") == 0) {
       print_usage();
       exit(0);
     } else if (strcmp(arg, "-d") == 0) {
