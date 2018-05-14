@@ -745,7 +745,7 @@ inline qd_real &qd_real::operator*=(const qd_real &a) {
 	return *this;
 }
 
-inline qd_real operator/ (const qd_real &a, const dd_real &b) {
+inline qd_real operator/(const qd_real &a, const dd_real &b) {
 #ifdef QD_SLOPPY_DIV
 	return qd_real::sloppy_div(a, b);
 #else
@@ -989,7 +989,7 @@ inline qd_real aint(const qd_real &a) {
 }
 
 inline bool qd_real::is_zero() const {
-	return (x[0] == 0.0);
+	return (x[0] == 0.0 || x[0] == -0.0);
 }
 
 inline bool qd_real::is_one() const {

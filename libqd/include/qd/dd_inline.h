@@ -514,7 +514,7 @@ inline bool operator!=(double a, const dd_real &b) {
 /*********** Micellaneous ************/
 /*  this == 0 */
 inline bool dd_real::is_zero() const {
-	return (x[0] == 0.0);
+	return (x[0] == 0.0 || x[0] == -0.0);
 }
 
 /*  this == 1 */
