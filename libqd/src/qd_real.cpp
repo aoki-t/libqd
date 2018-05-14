@@ -382,8 +382,8 @@ void round_string_qd(char *s, int precision, int *offset){
 	int D = precision ;
 
 	/* Round, handle carry */
-	if (s[D-1] >= '5') {
-		s[D-2]++;
+	if (D>0 && s[D] >= '5') {
+		s[D-1]++;
 
 		i = D-2;
 		while (i > 0 && s[i] > '9') {
@@ -395,7 +395,7 @@ void round_string_qd(char *s, int precision, int *offset){
 	/* If first digit is 10, shift everything. */
 	if (s[0] > '9') {
 		// e++; // don't modify exponent here
-		for (i = precision; i >= 2; i--) {s[i] = s[i-1];}
+		for (i = precision; i >= 1; i--) {s[i+1] = s[i];}
 		s[0] = '1';
 		s[1] = '0';
 
@@ -488,7 +488,7 @@ string qd_real::to_string(int precision, int width, ios_base::fmtflags fmt,
 				if (fixed) {
 					// fix the string if it's been computed incorrectly
 					// round here in the decimal string if required
-					round_string_qd(t, d + 1 , &off);
+					round_string_qd(t, d , &off);
 
 					if (off > 0) {
 						for (i = 0; i < off; i++) {s += t[i];}
